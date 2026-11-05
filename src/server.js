@@ -272,6 +272,75 @@ app.post('/cell/raid/:id', auth, (req, res) => {
   }
 });
 
+
+// JOBS SYSTEM
+app.get('/jobs', auth, (req, res) => {
+  const jobs = db.prepare('SELECT * FROM jobs').all();
+  res.render('jobs', { user: req.user, jobs });
+});
+app.post('/work/:id', auth, (req, res) => {
+  const job = db.prepare('SELECT * FROM jobs WHERE id=?').get(parseInt(req.params.id));
+  if (!job) return res.json({ msg: 'Job not found.' });
+  if (req.user.lvl < job.req_lvl) return res.json({ msg: `You need to be Level ${job.req_lvl} for this job!` });
+  if (req.user.en < job.energy_cost) return res.json({ msg: 'Not enough Energy!' });
+  
+  const pay = Math.floor(Math.random() * (job.pay_max - job.pay_min + 1)) + job.pay_min;
+  db.prepare('UPDATE users SET en=en-?, cash=cash+?, exp=exp+? WHERE id=?').run(job.energy_cost, pay, 10, req.user.id);
+  res.json({ msg: `Worked hard! Earned ${pay} and 10 EXP.` });
+});
+
+// DRUGS SYSTEM
+app.get('/drugs', auth, (req, res) => {
+  const drugs = db.prepare('SELECT * FROM drugs').all();
+  res.render('drugs', { user: req.user, drugs });
+});
+app.post('/buy-drug/:id', auth, (req, res) => {
+  const drug = db.prepare('SELECT * FROM drugs WHERE id=?').get(parseInt(req.params.id));
+  if (!drug) return res.json({ msg: 'Drug not found.' });
+  if (req.user.cash < drug.price) return res.json({ msg: 'Not enough cash!' });
+  
+  // Overdose check
+  if (Math.random() * 100 < drug.overdose_chance) {
+    db.prepare('UPDATE users SET cash=cash-?, hospitalized_until=? WHERE id=?').run(drug.price, Date.now() + 30*60*1000, req.user.id);
+    return res.json({ msg: '💀 OVERDOSE! You collapsed and are in the Med Bay for 30 minutes!' });
+  }
+  
+  // Apply effect
+  if (drug.effect === 'energy') db.prepare('UPDATE users SET en=MIN(en+20, max_en), cash=cash-? WHERE id=?').run(drug.price, req.user.id);
+  else if (drug.effect === 'heal') db.prepare('UPDATE users SET hp=MIN(hp+100, max_hp), cash=cash-? WHERE id=?').run(drug.price, req.user.id);
+  else if (drug.effect === 'str') db.prepare('UPDATE users SET str=str+20, cash=cash-? WHERE id=?').run(drug.price, req.user.id);
+  else if (drug.effect === 'all') db.prepare('UPDATE users SET str=str+50, def=def+50, spd=spd+50, cash=cash-? WHERE id=?').run(drug.price, req.user.id);
+  
+  res.json({ msg: `Used ${drug.name}! Effects applied.` });
+});
+
+// YARD EXPLORATION
+app.get('/yard', auth, (req, res) => res.render('yard', { user: req.user }));
+app.post('/yard/move', auth, (req, res) => {
+  const dir = req.body.dir;
+  if (req.user.stm < 5) return res.json({ msg: 'Not enough Stamina! Need 5.' });
+  
+  let x = req.user.yard_x;
+  let y = req.user.yard_y;
+  if (dir === 'n') y--;
+  else if (dir === 's') y++;
+  else if (dir === 'e') x++;
+  else if (dir === 'w') x--;
+  
+  // Keep within bounds (0 to 10)
+  if (x < 0 || x > 10 || y < 0 || y > 10) return res.json({ msg: 'You hit the prison wall!' });
+  
+  db.prepare('UPDATE users SET yard_x=?, yard_y=?, stm=stm-5 WHERE id=?').run(x, y, req.user.id);
+  res.json({ msg: `Moved ${dir.toUpperCase()}. Position: ${x}, ${y}` });
+});
+app.post('/yard/dig', auth, (req, res) => {
+  if (req.user.en < 10) return res.json({ msg: 'Digging requires 10 Energy!' });
+  
+  const foundCash = Math.floor(Math.random() * 50) + 10;
+  db.prepare('UPDATE users SET en=en-10, cash=cash+?, exp=exp+5 WHERE id=?').run(foundCash, req.user.id);
+  res.json({ msg: `🔍 You dug around and found ${foundCash} buried in the dirt! (+5 EXP)` });
+});
+
 db.ready.then(() => {
   app.listen(process.env.PORT, () => console.log(`🔒 CELLBLOCK KINGS running on http://localhost:${process.env.PORT}`));
 });

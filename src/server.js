@@ -192,6 +192,86 @@ app.post("/train", auth, (req, res) => {
   }
 });
 
+
+// BANK SYSTEM
+app.get('/bank', auth, (req, res) => res.render('bank', { user: req.user }));
+app.post('/bank/deposit', auth, (req, res) => {
+  const amount = parseInt(req.body.amount);
+  if (!amount || amount <= 0) return res.json({ msg: 'Invalid amount' });
+  if (req.user.cash < amount) return res.json({ msg: 'Not enough cash on hand!' });
+  db.prepare('UPDATE users SET cash=cash-?, bank_balance=bank_balance+? WHERE id=?').run(amount, amount, req.user.id);
+  res.json({ msg: `Deposited ${amount} safely in the bank!` });
+});
+app.post('/bank/withdraw', auth, (req, res) => {
+  const amount = parseInt(req.body.amount);
+  if (!amount || amount <= 0) return res.json({ msg: 'Invalid amount' });
+  if (req.user.bank_balance < amount) return res.json({ msg: 'Not enough in the bank!' });
+  db.prepare('UPDATE users SET cash=cash+?, bank_balance=bank_balance-? WHERE id=?').run(amount, amount, req.user.id);
+  res.json({ msg: `Withdrew ${amount} from the bank!` });
+});
+
+// HITLIST SYSTEM
+app.get('/hitlist', auth, (req, res) => {
+  const hits = db.prepare('SELECT h.*, u1.tag as target_tag, u2.tag as poster_tag FROM hitlist h JOIN users u1 ON h.target_id=u1.id JOIN users u2 ON h.poster_id=u2.id WHERE h.status="active"').all();
+  res.render('hitlist', { user: req.user, hits });
+});
+app.post('/hitlist/post', auth, (req, res) => {
+  const { targetId, bounty } = req.body;
+  if (req.user.cash < bounty) return res.json({ msg: 'Not enough cash for bounty!' });
+  db.prepare('UPDATE users SET cash=cash-? WHERE id=?').run(bounty, req.user.id);
+  db.prepare('INSERT INTO hitlist (target_id, poster_id, bounty) VALUES (?, ?, ?)').run(targetId, req.user.id, bounty);
+  res.json({ msg: 'Bounty posted successfully!' });
+});
+app.post('/hitlist/claim/:id', auth, (req, res) => {
+  const hit = db.prepare('SELECT * FROM hitlist WHERE id=? AND status="active"').get(parseInt(req.params.id));
+  if (!hit) return res.json({ msg: 'Hit already claimed or removed.' });
+  db.prepare('UPDATE hitlist SET status="claimed" WHERE id=?').run(hit.id);
+  db.prepare('UPDATE users SET cash=cash+? WHERE id=?').run(hit.bounty, req.user.id);
+  res.json({ msg: `Contract claimed! You earned ${hit.bounty}!` });
+});
+
+// CELL SYSTEM
+app.get('/cell', auth, (req, res) => {
+  const cell = db.prepare('SELECT * FROM cells WHERE user_id=?').get(req.user.id) || { combo: '00000' };
+  res.render('cell', { user: req.user, cell });
+});
+app.post('/cell/combo', auth, (req, res) => {
+  const { combo } = req.body;
+  if (!/^\d{5}$/.test(combo)) return res.json({ msg: 'Combo must be exactly 5 digits!' });
+  db.prepare('INSERT OR REPLACE INTO cells (user_id, combo) VALUES (?, ?)').run(req.user.id, combo);
+  res.json({ msg: 'Cell combo updated!' });
+});
+app.post('/cell/raid/:id', auth, (req, res) => {
+  const targetId = parseInt(req.params.id);
+  const { guess } = req.body;
+  const targetCell = db.prepare('SELECT * FROM cells WHERE user_id=?').get(targetId);
+  const target = db.prepare('SELECT * FROM users WHERE id=?').get(targetId);
+  
+  if (!targetCell || !target) return res.json({ msg: 'Target has no cell.' });
+  if (req.user.nrv < 10) return res.json({ msg: 'Raiding costs 10 Nerve!' });
+  
+  db.prepare('UPDATE users SET nrv=nrv-10 WHERE id=?').run(req.user.id);
+  
+  if (guess === targetCell.combo) {
+    const stolenCash = Math.floor(target.cash * 0.15);
+    db.prepare('UPDATE users SET cash=cash-? WHERE id=?').run(stolenCash, targetId);
+    db.prepare('UPDATE users SET cash=cash+? WHERE id=?').run(stolenCash, req.user.id);
+    // Reset combo after successful raid
+    const newCombo = Math.floor(10000 + Math.random() * 90000).toString();
+    db.prepare('UPDATE cells SET combo=? WHERE user_id=?').run(newCombo, targetId);
+    res.json({ msg: `🔓 RAID SUCCESS! You cracked the combo and stole ${stolenCash}!` });
+  } else {
+    // Generate feedback (Mastermind style)
+    let feedback = '';
+    for (let i = 0; i < 5; i++) {
+      if (guess[i] === targetCell.combo[i]) feedback += '🟢';
+      else if (targetCell.combo.includes(guess[i])) feedback += '🟡';
+      else feedback += '🔴';
+    }
+    res.json({ msg: `❌ RAID FAILED! Combo hint: ${feedback}. You lost 10 Nerve.` });
+  }
+});
+
 db.ready.then(() => {
   app.listen(process.env.PORT, () => console.log(`🔒 CELLBLOCK KINGS running on http://localhost:${process.env.PORT}`));
 });

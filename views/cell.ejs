@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head><title>My Cell - Cellblock Kings</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <header><h1>🔒 CELLBLOCK KINGS</h1><span><%= user.tag %> (Lvl <%= user.lvl %>)</span></header>
+  <nav><a href="/home">Home</a> <a href="/gym">Gym</a> <a href="/market">Market</a> <a href="/inventory">Inventory</a> <a href="/inmates">Inmates</a> <a href="/bank">Bank</a> <a href="/hitlist">Hitlist</a> <a href="/cell">Cell</a> <a href="/logout" style="color:#ff6b35">Logout</a></nav>
+  <main>
+    <h2>🏢 Your Prison Cell</h2>
+    <div style="background:#222; padding:20px; border-radius:5px; margin-bottom:20px; border: 1px solid #444;">
+      <h3 style="color:#ff6b35;">Current Combo: <span id="currentCombo" style="color:#fff; letter-spacing: 5px;"><%= cell.combo %></span></h3>
+      <p style="color:#a0a0a0; font-size:0.9em; margin:10px 0;">Change your combo to protect your cell from raids. Use 5 digits.</p>
+      <div style="display:flex; gap:10px;">
+        <input type="text" id="newCombo" maxlength="5" placeholder="00000" style="width:150px;">
+        <button class="action-btn" onclick="updateCombo()" style="width:auto; padding: 10px 20px;">Update Combo</button>
+      </div>
+    </div>
+
+    <h3>🔓 Raid Another Inmate's Cell</h3>
+    <p style="color:#a0a0a0; font-size:0.9em; margin-bottom:10px;">Costs 10 Nerve. Guess their 5-digit combo. 🟢 = Correct spot, 🟡 = Wrong spot, 🔴 = Not in combo.</p>
+    <div style="display:flex; gap:10px;">
+      <input type="number" id="raidTargetId" placeholder="Target User ID" style="flex:1;">
+      <input type="text" id="raidGuess" maxlength="5" placeholder="Combo Guess" style="flex:1;">
+      <button class="attack-btn" onclick="raidCell()" style="width:auto; padding: 10px 20px;">RAID</button>
+    </div>
+  </main>
+  <script>
+    function updateCombo() {
+      const combo = document.getElementById('newCombo').value;
+      if (combo.length !== 5) return alert('Combo must be exactly 5 digits!');
+      fetch('/cell/combo', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({combo}) })
+        .then(r => r.json()).then(d => { alert(d.msg); location.reload(); });
+    }
+    function raidCell() {
+      const targetId = document.getElementById('raidTargetId').value;
+      const guess = document.getElementById('raidGuess').value;
+      if (!targetId || guess.length !== 5) return alert('Enter Target ID and a 5-digit guess!');
+      fetch('/cell/raid/' + targetId, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({guess}) })
+        .then(r => r.json()).then(d => { alert(d.msg); location.reload(); });
+    }
+  </script>
+</body>
+</html>

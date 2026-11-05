@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head><title>Hitlist - Cellblock Kings</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <header><h1>🔒 CELLBLOCK KINGS</h1><span><%= user.tag %> (Lvl <%= user.lvl %>)</span></header>
+  <nav><a href="/home">Home</a> <a href="/gym">Gym</a> <a href="/market">Market</a> <a href="/inventory">Inventory</a> <a href="/inmates">Inmates</a> <a href="/bank">Bank</a> <a href="/hitlist">Hitlist</a> <a href="/cell">Cell</a> <a href="/logout" style="color:#ff6b35">Logout</a></nav>
+  <main>
+    <h2>🎯 The Hitlist</h2>
+    <div style="background:#222; padding:15px; border-radius:5px; margin-bottom:20px;">
+      <h4>Post a Bounty</h4>
+      <div style="display:flex; gap:10px; margin-top:10px;">
+        <input type="number" id="targetId" placeholder="Target User ID" style="flex:1;">
+        <input type="number" id="bountyAmount" placeholder="Bounty Amount ($)" style="flex:1;">
+        <button class="action-btn" onclick="postHit()" style="flex:1; background:#d32f2f;">Post</button>
+      </div>
+    </div>
+    
+    <h3>Active Contracts</h3>
+    <% if (hits.length === 0) { %>
+      <p style="color:#a0a0a0;">No active bounties. The streets are quiet... for now.</p>
+    <% } else { %>
+      <div class="inmates-list">
+        <% hits.forEach(hit => { %>
+          <div class="inmate-card">
+            <div class="inmate-info">
+              <h4>Target: <%= hit.target_tag %> <span style="color:#a0a0a0; font-size:0.8em;">(ID: <%= hit.target_id %>)</span></h4>
+              <p style="color:#ffd700; font-size:0.9em;">Bounty: $<%= hit.bounty %> | Posted by: <%= hit.poster_tag %></p>
+            </div>
+            <button class="attack-btn" onclick="claimHit(<%= hit.id %>)">Claim Contract</button>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
+  <script>
+    function postHit() {
+      const targetId = document.getElementById('targetId').value;
+      const bounty = document.getElementById('bountyAmount').value;
+      if (!targetId || !bounty) return alert('Fill in all fields!');
+      fetch('/hitlist/post', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({targetId, bounty}) })
+        .then(r => r.json()).then(d => { alert(d.msg); location.reload(); });
+    }
+    function claimHit(id) {
+      if(!confirm('Claim this contract? (You will receive the bounty immediately)')) return;
+      fetch('/hitlist/claim/' + id, { method: 'POST' }).then(r => r.json()).then(d => { alert(d.msg); location.reload(); });
+    }
+  </script>
+</body>
+</html>

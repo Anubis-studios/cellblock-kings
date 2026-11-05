@@ -33,13 +33,14 @@ class DB {
       en INTEGER DEFAULT 10, max_en INTEGER DEFAULT 10,
       nrv INTEGER DEFAULT 5, max_nrv INTEGER DEFAULT 5,
       stm INTEGER DEFAULT 100, str INTEGER DEFAULT 10, def INTEGER DEFAULT 10, spd INTEGER DEFAULT 10,
-      exp INTEGER DEFAULT 0, cash INTEGER DEFAULT 1000, credits INTEGER DEFAULT 0,
+      exp INTEGER DEFAULT 0, cash INTEGER DEFAULT 1000, bank_balance INTEGER DEFAULT 0, credits INTEGER DEFAULT 0,
       vip INTEGER DEFAULT 0, prison_id INTEGER DEFAULT 1, online INTEGER DEFAULT 0
     )`);
     this.db.run(`CREATE TABLE IF NOT EXISTS crimes (id INTEGER PRIMARY KEY, name TEXT, cost INT, reward_min INT, reward_max INT, exp_min INT, exp_max INT)`);
     this.db.run(`CREATE TABLE IF NOT EXISTS cells (user_id INT PRIMARY KEY, combo TEXT)`);
     this.db.run(`CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY, name TEXT, type TEXT, price INT, stat_mod INT, stat_type TEXT, heal INT, energy INT, level_req INT)`);
     this.db.run(`CREATE TABLE IF NOT EXISTS inventory (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INT, item_id INT, qty INT, equipped INT DEFAULT 0)`);
+    this.db.run(`CREATE TABLE IF NOT EXISTS hitlist (id INTEGER PRIMARY KEY AUTOINCREMENT, target_id INT, poster_id INT, bounty INT, status TEXT DEFAULT 'active')`);
   }
 
   seed() {

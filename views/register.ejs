@@ -1,0 +1,12 @@
+<!DOCTYPE html><html><head><title>Register</title><link rel="stylesheet" href="/css/style.css"></head>
+<body class="auth"><div class="box"><h1>New Inmate</h1>
+<% if (error) { %><p class="error"><%= error %></p><% } %>
+<form method="POST">
+<input name="tag" placeholder="Inmate Tag" required>
+<input name="email" placeholder="Email" required>
+<input name="pass" type="password" placeholder="Passcode (min 6)" required>
+<input name="confirm" type="password" placeholder="Confirm Passcode" required>
+<select name="gender"><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select>
+<label class="checkbox"><input type="checkbox" name="rules" required> I accept the prison rules</label>
+<button>Register & Enter</button>
+</form></div></body></html>

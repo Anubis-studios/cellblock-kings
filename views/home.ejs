@@ -1,0 +1,27 @@
+<!DOCTYPE html><html><head><title>Home</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+<header><h1>🔒 CELLBLOCK KINGS</h1><span><%= user.tag %> (Lvl <%= user.lvl %>)</span></header>
+<nav><a href="/home">Home</a> <a href="/logout" style="color:#ff6b35">Logout</a></nav>
+<main>
+  <h2>Welcome to Ironhold</h2>
+  <div class="stats">
+    <div class="stat-box"><span>Cash</span><strong style="color:#4caf50">$<%= user.cash %></strong></div>
+    <div class="stat-box"><span>Nerve</span><strong style="color:#2196f3"><%= user.nrv %>/<%= user.max_nrv %></strong></div>
+    <div class="stat-box"><span>Energy</span><strong style="color:#ff6b35"><%= user.en %>/<%= user.max_en %></strong></div>
+    <div class="stat-box"><span>EXP</span><strong style="color:#ffd700"><%= user.exp %></strong></div>
+  </div>
+  <h3>Available Crimes</h3>
+  <button class="crime-btn" onclick="doCrime(1)">🔫 Pick Pockets (Cost: 1 Nerve)</button>
+  <button class="crime-btn" onclick="doCrime(2)">🍔 Steal Food (Cost: 2 Nerve)</button>
+  <button class="crime-btn" onclick="doCrime(3)">👊 Extort Newbie (Cost: 3 Nerve)</button>
+  <button class="crime-btn" onclick="doCrime(4)">📦 Smuggle Contraband (Cost: 5 Nerve)</button>
+</main>
+<script>
+function doCrime(id) {
+  fetch('/crime/'+id, {method:'POST'}).then(r=>r.json()).then(d=>{
+    alert(d.msg);
+    location.reload();
+  });
+}
+</script>
+</body></html>

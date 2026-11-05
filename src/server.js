@@ -116,4 +116,100 @@ app.get('/logout', async (req, res) => {
   req.session.destroy(() => res.redirect('/login'));
 });
 
+
+// DAILY REWARDS
+app.get('/daily', auth, async (req, res) => {
+  const now = Date.now();
+  const canClaim = (now - req.user.last_login) > 86400000; // 24 hours
+  res.render('daily', { user: req.user, canClaim });
+});
+app.post('/daily/claim', auth, async (req, res) => {
+  const now = Date.now();
+  if ((now - req.user.last_login) < 86400000) return res.json({ msg: 'Already claimed today!' });
+  
+  const baseReward = 500;
+  const streakBonus = (req.user.streak || 0) * 100;
+  const totalReward = baseReward + streakBonus;
+  
+  await db.collection('users').updateOne({ _id: req.user._id }, { 
+    $inc: { cash: totalReward, streak: 1 }, 
+    $set: { last_login: now } 
+  });
+  res.json({ msg: `Claimed ${totalReward}! Current Streak: ${(req.user.streak || 0) + 1} days!` });
+});
+
+// ADVANCED DRUGS
+app.get('/drugs', auth, (req, res) => {
+  const drugs = [
+    { id: 1, name: 'Caffeine Pills', price: 100, effect: 'energy', buff: 20, duration: 10, od_chance: 5 },
+    { id: 2, name: 'Steroids', price: 500, effect: 'str', buff: 20, duration: 15, od_chance: 15 },
+    { id: 3, name: 'Kevlar Weave', price: 800, effect: 'def', buff: 20, duration: 15, od_chance: 10 },
+    { id: 4, name: 'Adrenaline Shot', price: 2000, effect: 'all', buff: 30, duration: 10, od_chance: 25 }
+  ];
+  res.render('drugs', { user: req.user, drugs });
+});
+app.post('/drugs/buy/:id', auth, async (req, res) => {
+  const drugs = {
+    1: { name: 'Caffeine Pills', price: 100, effect: 'energy', buff: 20, duration: 10, od_chance: 5 },
+    2: { name: 'Steroids', price: 500, effect: 'str', buff: 20, duration: 15, od_chance: 15 },
+    3: { name: 'Kevlar Weave', price: 800, effect: 'def', buff: 20, duration: 15, od_chance: 10 },
+    4: { name: 'Adrenaline Shot', price: 2000, effect: 'all', buff: 30, duration: 10, od_chance: 25 }
+  };
+  const drug = drugs[req.params.id];
+  if (!drug) return res.json({ msg: 'Invalid drug.' });
+  if (req.user.cash < drug.price) return res.json({ msg: 'Not enough cash!' });
+
+  if (Math.random() * 100 < drug.od_chance) {
+    await db.collection('users').updateOne({ _id: req.user._id }, { 
+      $inc: { cash: -drug.price }, 
+      $set: { hospitalized_until: Date.now() + 30 * 60 * 1000 } 
+    });
+    return res.json({ msg: '💀 OVERDOSE! You collapsed and are in the Med Bay for 30 minutes!' });
+  }
+
+  const update = { $inc: { cash: -drug.price } };
+  const expires = Date.now() + (drug.duration * 60 * 1000);
+  if (drug.effect === 'str') update.$set = { buff_str: drug.buff, buff_expires: expires };
+  else if (drug.effect === 'def') update.$set = { buff_def: drug.buff, buff_expires: expires };
+  else if (drug.effect === 'all') update.$set = { buff_str: drug.buff, buff_def: drug.buff, buff_spd: drug.buff, buff_expires: expires };
+  
+  await db.collection('users').updateOne({ _id: req.user._id }, update);
+  res.json({ msg: `Used ${drug.name}! Buff active for ${drug.duration} mins.` });
+});
+
+// GANG SYSTEM
+app.get('/gang', auth, async (req, res) => {
+  let gang = null;
+  if (req.user.gang_id) {
+    gang = await db.collection('gangs').findOne({ _id: new ObjectId(req.user.gang_id) });
+  }
+  const allGangs = await db.collection('gangs').find().limit(10).toArray();
+  res.render('gang', { user: req.user, gang, allGangs });
+});
+app.post('/gang/create', auth, async (req, res) => {
+  const { name } = req.body;
+  if (req.user.cash < 5000) return res.json({ msg: 'Need $5,000 to start a gang!' });
+  if (req.user.gang_id) return res.json({ msg: 'You are already in a gang!' });
+  
+  const result = await db.collection('gangs').insertOne({
+    name, leader_id: req.user._id.toString(), members: [req.user._id.toString()], bank: 0
+  });
+  await db.collection('users').updateOne({ _id: req.user._id }, { $set: { gang_id: result.insertedId.toString() }, $inc: { cash: -5000 } });
+  res.json({ msg: `Gang "${name}" created!` });
+});
+app.post('/gang/join/:id', auth, async (req, res) => {
+  if (req.user.gang_id) return res.json({ msg: 'Leave your current gang first!' });
+  await db.collection('gangs').updateOne({ _id: new ObjectId(req.params.id) }, { $push: { members: req.user._id.toString() } });
+  await db.collection('users').updateOne({ _id: req.user._id }, { $set: { gang_id: req.params.id } });
+  res.json({ msg: 'Joined gang!' });
+});
+app.post('/gang/deposit', auth, async (req, res) => {
+  const amount = parseInt(req.body.amount);
+  if (!req.user.gang_id) return res.json({ msg: 'Not in a gang!' });
+  if (req.user.cash < amount) return res.json({ msg: 'Not enough cash!' });
+  await db.collection('gangs').updateOne({ _id: new ObjectId(req.user.gang_id) }, { $inc: { bank: amount } });
+  await db.collection('users').updateOne({ _id: req.user._id }, { $inc: { cash: -amount } });
+  res.json({ msg: `Deposited ${amount} to gang bank!` });
+});
+
 startServer().catch(console.error);

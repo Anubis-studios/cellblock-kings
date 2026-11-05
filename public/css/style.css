@@ -1,38 +1,21 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: #1a1a1a; color: #e0e0e0; font-family: 'Courier New', monospace; }
+:root { --bg: #121212; --surface: #1e1e1e; --primary: #ff6b35; --success: #4caf50; --danger: #f44336; --text: #e0e0e0; --text-dim: #a0a0a0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding-bottom: 70px; }
+.mobile-header { background: var(--surface); padding: 15px; border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.mobile-header h1 { font-size: 1.2em; color: var(--primary); }
+.mobile-main { padding: 15px; max-width: 600px; margin: 0 auto; }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid #333; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+.bottom-nav a { color: var(--text-dim); text-decoration: none; text-align: center; font-size: 0.8em; transition: 0.2s; }
+.bottom-nav a:hover, .bottom-nav a:active { color: var(--primary); }
+.card { background: var(--surface); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #333; }
+.card-row { background: var(--surface); padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.list { display: flex; flex-direction: column; gap: 10px; }
+.btn-primary { background: var(--primary); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
+.btn-action { background: #333; color: #fff; border: 1px solid #555; padding: 10px; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px; }
+.btn-small { background: var(--success); color: #fff; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; }
+input { background: #121212; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 8px; width: 100%; margin-bottom: 10px; font-size: 1em; }
+.warning { color: var(--danger); font-size: 0.9em; margin-bottom: 15px; }
+.price { color: var(--success); font-weight: bold; font-size: 1.1em; margin: 10px 0; }
 .auth { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-.box { background: #2a2a2a; padding: 25px; border: 2px solid #ff6b35; border-radius: 8px; width: 100%; max-width: 350px; }
-.box h1 { color: #ff6b35; text-align: center; margin-bottom: 20px; font-size: 1.5em; }
-input, select { width: 100%; padding: 12px; margin: 8px 0; background: #111; color: #fff; border: 1px solid #444; border-radius: 4px; font-family: inherit; }
-button { background: #ff6b35; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1em; margin-top: 10px; }
-button:active { background: #e55a2b; }
-.error { color: #ff6b35; text-align: center; margin-bottom: 10px; }
-.link { text-align: center; margin-top: 15px; }
-.link a { color: #4caf50; text-decoration: none; }
-header { background: #0d0d0d; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ff6b35; }
-header h1 { color: #ff6b35; font-size: 1.2em; }
-nav { background: #2a2a2a; padding: 10px; display: flex; gap: 15px; border-bottom: 1px solid #444; }
-nav a { color: #e0e0e0; text-decoration: none; font-weight: bold; }
-main { padding: 20px; }
-.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
-.stat-box { background: #2a2a2a; padding: 15px; border-radius: 5px; text-align: center; border: 1px solid #444; }
-.stat-box span { display: block; font-size: 0.8em; color: #a0a0a0; margin-bottom: 5px; }
-.stat-box strong { font-size: 1.2em; }
-.crime-btn { background: #111; border: 2px solid #444; color: #e0e0e0; text-align: left; margin-bottom: 10px; }
-.crime-btn:active { border-color: #ff6b35; background: #222; }
-nav a { color: #e0e0e0; text-decoration: none; font-weight: bold; margin-right: 15px; }
-nav a:hover { color: #ff6b35; }
-
-.items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
-.item-card { background: #222; border: 1px solid #444; padding: 10px; border-radius: 5px; text-align: center; }
-.item-card.equipped { border-color: #4caf50; background: #1a2a1a; }
-.item-card h4 { color: #fff; margin-bottom: 5px; font-size: 0.9em; }
-.buy-btn, .action-btn { background: #ff6b35; color: #fff; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer; margin-top: 5px; font-size: 0.8em; width: 100%; }
-.action-btn { background: #2196f3; }
-
-.inmates-list { display: flex; flex-direction: column; gap: 10px; }
-.inmate-card { background: #222; border: 1px solid #444; padding: 12px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
-.inmate-card.medbay { opacity: 0.6; border-color: #ff6b35; }
-.inmate-info h4 { margin: 0 0 5px 0; color: #fff; }
-.attack-btn { background: #d32f2f; color: #fff; border: none; padding: 8px 15px; border-radius: 3px; cursor: pointer; font-weight: bold; }
-.attack-btn:active { background: #b71c1c; }
+.auth .card { width: 100%; max-width: 350px; }

@@ -1,0 +1,42 @@
+<!DOCTYPE html><html><head><title>Gangs</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <%- include('partials/nav') %>
+  <main class="mobile-main">
+    <h2>👥 Gangs</h2>
+    <% if (!user.gang_id) { %>
+      <div class="card">
+        <h3>Start Your Own Gang</h3>
+        <p>Cost: $5,000</p>
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <input type="text" id="gName" placeholder="Gang Name" style="flex:1">
+          <button class="btn-primary" onclick="create()">Create</button>
+        </div>
+      </div>
+      <h3>Available Gangs</h3>
+      <div class="list">
+        <% allGangs.forEach(g => { %>
+          <div class="card-row">
+            <div><strong><%= g.name %></strong><br><small>Members: <%= g.members.length %> | Bank: $<%= g.bank %></small></div>
+            <button class="btn-small" onclick="join('<%= g._id %>')">Join</button>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="card" style="border-color:#ffd700">
+        <h3>🏆 <%= gang.name %></h3>
+        <p>Gang Bank: <strong style="color:#4caf50">$<%= gang.bank %></strong></p>
+        <p>Members: <%= gang.members.length %></p>
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <input type="number" id="gDep" placeholder="Amount" style="flex:1">
+          <button class="btn-primary" onclick="deposit()">Deposit</button>
+        </div>
+      </div>
+    <% } %>
+  </main>
+  <%- include('partials/bottom-nav') %>
+  <script>
+    function create(){const n=document.getElementById('gName').value;if(!n)return;fetch('/gang/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n})}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}
+    function join(id){fetch('/gang/join/'+id,{method:'POST'}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}
+    function deposit(){const a=document.getElementById('gDep').value;if(!a)return;fetch('/gang/deposit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:a})}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}
+  </script>
+</body></html>

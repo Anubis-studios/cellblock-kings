@@ -1,5 +1,7 @@
 <!DOCTYPE html><html><head><title>Shoutbox</title><link rel="stylesheet" href="/css/style.css"></head>
 <body>
+  <%- include('partials/nav') %>
+  <main class="mobile-main">
   <header><h1>🔒 CELLBLOCK KINGS</h1><span><%= user.tag %></span></header>
   <nav><a href="/home">Home</a> <a href="/chat">Chat</a> <a href="/leaderboard">Top 10</a> <a href="/logout" style="color:#ff6b35">Logout</a></nav>
   <main>
@@ -13,5 +15,6 @@
         <div class="inmate-card"><div class="inmate-info"><h4><%= m.tag %></h4><p><%= m.msg %></p></div></div>
       <% }) %>
     </div>
-  </main>
+  
+  <%- include('partials/bottom-nav') %>
 </body></html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html><html><head><title>Daily Rewards</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <%- include('partials/nav') %>
+  <main class="mobile-main">
+    <h2>🎁 Daily Rewards</h2>
+    <div class="card">
+      <p>Current Streak: <strong style="color:#ffd700"><%= user.streak || 0 %> days</strong></p>
+      <% if (canClaim) { %>
+        <p>Reward: <strong style="color:#4caf50">$<%= 500 + ((user.streak || 0) * 100) %></strong></p>
+        <button class="btn-primary" onclick="claim()">Claim Reward</button>
+      <% } else { %>
+        <p style="color:#ff6b35">You have already claimed your reward today. Come back in 24 hours!</p>
+      <% } %>
+    </div>
+  </main>
+  <%- include('partials/bottom-nav') %>
+  <script>function claim(){fetch('/daily/claim',{method:'POST'}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}</script>
+</body></html>

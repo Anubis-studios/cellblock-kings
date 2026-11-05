@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head><title>Inmates - Cellblock Kings</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <header><h1>🔒 CELLBLOCK KINGS</h1><span><%= user.tag %> (Lvl <%= user.lvl %>)</span></header>
+  <nav>
+    <a href="/home">Home</a> <a href="/gym">Gym</a> <a href="/market">Market</a> 
+    <a href="/inventory">Inventory</a> <a href="/inmates">Inmates</a> <a href="/logout" style="color:#ff6b35">Logout</a>
+  </nav>
+  <main>
+    <h2>👥 Prison Inmates</h2>
+    <p style="color:#a0a0a0; margin-bottom:15px;">Attack other inmates to steal 10% of their cash! (Costs 5 Energy)</p>
+    
+    <% if (user.hospitalized_until && user.hospitalized_until > now) { %>
+      <div style="background:#5a1a1a; padding:15px; border-radius:5px; margin-bottom:20px; border:1px solid #ff6b35;">
+        <h3 style="color:#ff6b35;">🏥 You are in the Med Bay!</h3>
+        <p>Recover your wounds. You can attack again in <%= Math.ceil((user.hospitalized_until - now) / 60000) %> minutes.</p>
+      </div>
+    <% } %>
+
+    <div class="inmates-list">
+      <% inmates.forEach(inmate => { 
+        const inMedBay = inmate.hospitalized_until && inmate.hospitalized_until > now;
+        const medBayMins = inMedBay ? Math.ceil((inmate.hospitalized_until - now) / 60000) : 0;
+      %>
+        <div class="inmate-card <%= inMedBay ? 'medbay' : '' %>">
+          <div class="inmate-info">
+            <h4><%= inmate.tag %> <span style="color:#a0a0a0; font-size:0.8em;">(Lvl <%= inmate.lvl %>)</span></h4>
+            <p style="font-size:0.8em; color:#a0a0a0;">STR: <%= inmate.str %> | DEF: <%= inmate.def %> | SPD: <%= inmate.spd %></p>
+            <% if (inMedBay) { %>
+              <p style="color:#ff6b35; font-size:0.8em;">🏥 In Med Bay (<%= medBayMins %>m)</p>
+            <% } else { %>
+              <p style="color:#4caf50; font-size:0.8em;">🟢 Active | Cash: $<%= inmate.cash %></p>
+            <% } %>
+          </div>
+          <% if (!inMedBay && inmate.id !== user.id) { %>
+            <button class="attack-btn" onclick="attack(<%= inmate.id %>)">⚔️ Attack</button>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+  </main>
+  <script>
+    function attack(id) {
+      if(!confirm('Are you sure you want to attack this inmate? (Costs 5 Energy)')) return;
+      fetch('/attack/'+id, {method:'POST'}).then(r=>r.json()).then(d=>{
+        alert(d.msg);
+        location.reload();
+      });
+    }
+  </script>
+</body>
+</html>

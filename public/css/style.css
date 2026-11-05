@@ -29,3 +29,10 @@ nav a:hover { color: #ff6b35; }
 .item-card h4 { color: #fff; margin-bottom: 5px; font-size: 0.9em; }
 .buy-btn, .action-btn { background: #ff6b35; color: #fff; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer; margin-top: 5px; font-size: 0.8em; width: 100%; }
 .action-btn { background: #2196f3; }
+
+.inmates-list { display: flex; flex-direction: column; gap: 10px; }
+.inmate-card { background: #222; border: 1px solid #444; padding: 12px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+.inmate-card.medbay { opacity: 0.6; border-color: #ff6b35; }
+.inmate-info h4 { margin: 0 0 5px 0; color: #fff; }
+.attack-btn { background: #d32f2f; color: #fff; border: none; padding: 8px 15px; border-radius: 3px; cursor: pointer; font-weight: bold; }
+.attack-btn:active { background: #b71c1c; }

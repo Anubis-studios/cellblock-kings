@@ -195,3 +195,67 @@ app.post("/train", auth, (req, res) => {
 db.ready.then(() => {
   app.listen(process.env.PORT, () => console.log(`🔒 CELLBLOCK KINGS running on http://localhost:${process.env.PORT}`));
 });
+
+// INMATES LIST
+app.get('/inmates', auth, (req, res) => {
+  const now = Date.now();
+  // Show all users except self. If hospitalized, show time remaining.
+  const inmates = db.prepare('SELECT id, tag, lvl, str, def, spd, cash, hospitalized_until FROM users WHERE id != ?').all(req.user.id);
+  res.render('inmates', { user: req.user, inmates, now });
+});
+
+// ATTACK PLAYER
+app.post('/attack/:id', auth, (req, res) => {
+  const targetId = parseInt(req.params.id);
+  if (targetId === req.user.id) return res.json({ msg: "You can't attack yourself!" });
+  
+  const target = db.prepare('SELECT * FROM users WHERE id=?').get(targetId);
+  if (!target) return res.json({ msg: 'Inmate not found.' });
+  
+  // Check if target is in Med Bay
+  if (target.hospitalized_until && target.hospitalized_until > Date.now()) {
+    const minsLeft = Math.ceil((target.hospitalized_until - Date.now()) / 60000);
+    return res.json({ msg: `${target.tag} is in the Med Bay for ${minsLeft} more minutes!` });
+  }
+  
+  // Check if attacker is in Med Bay
+  if (req.user.hospitalized_until && req.user.hospitalized_until > Date.now()) {
+    return res.json({ msg: 'You are in the Med Bay! Wait to recover.' });
+  }
+  
+  if (req.user.en < 5) return res.json({ msg: 'Not enough Energy! Need 5.' });
+  
+  // Get equipped gear
+  const atkWeapon = db.prepare("SELECT i.stat_mod FROM inventory inv JOIN items i ON inv.item_id=i.id WHERE inv.user_id=? AND i.type='weapon' AND inv.equipped=1").get(req.user.id);
+  const atkArmor = db.prepare("SELECT i.stat_mod FROM inventory inv JOIN items i ON inv.item_id=i.id WHERE inv.user_id=? AND i.type='armor' AND inv.equipped=1").get(req.user.id);
+  const defWeapon = db.prepare("SELECT i.stat_mod FROM inventory inv JOIN items i ON inv.item_id=i.id WHERE inv.user_id=? AND i.type='weapon' AND inv.equipped=1").get(target.id);
+  const defArmor = db.prepare("SELECT i.stat_mod FROM inventory inv JOIN items i ON inv.item_id=i.id WHERE inv.user_id=? AND i.type='armor' AND inv.equipped=1").get(target.id);
+  
+  const atkPower = req.user.str + (atkWeapon ? atkWeapon.stat_mod : 0);
+  const defPower = target.def + (defArmor ? defArmor.stat_mod : 0);
+  
+  // Combat math
+  const atkRoll = Math.floor(Math.random() * 20) + atkPower;
+  const defRoll = Math.floor(Math.random() * 20) + defPower;
+  
+  db.prepare('UPDATE users SET en=en-5 WHERE id=?').run(req.user.id);
+  
+  if (atkRoll > defRoll) {
+    // Attacker wins
+    const stolen = Math.floor(target.cash * 0.1);
+    const expGain = 25;
+    db.prepare('UPDATE users SET cash=cash+?, exp=exp+? WHERE id=?').run(stolen, expGain, req.user.id);
+    db.prepare('UPDATE users SET cash=cash-? WHERE id=?').run(stolen, target.id);
+    
+    // Send loser to Med Bay for 10 minutes
+    const medBayTime = Date.now() + (10 * 60 * 1000);
+    db.prepare('UPDATE users SET hospitalized_until=? WHERE id=?').run(medBayTime, target.id);
+    
+    res.json({ msg: `⚔️ VICTORY! You beat ${target.tag} and stole $${stolen}! (+${expGain} EXP). They are in the Med Bay for 10 mins.` });
+  } else {
+    // Defender wins (Attacker loses)
+    const medBayTime = Date.now() + (15 * 60 * 1000);
+    db.prepare('UPDATE users SET hospitalized_until=? WHERE id=?').run(medBayTime, req.user.id);
+    res.json({ msg: `💀 DEFEAT! ${target.tag} beat you and sent you to the Med Bay for 15 mins!` });
+  }
+});

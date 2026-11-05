@@ -1,21 +1,33 @@
-<!DOCTYPE html><html><head><title>Home</title><link rel="stylesheet" href="/css/style.css"></head>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
 <body>
   <%- include('partials/nav') %>
   <main class="mobile-main">
-<header><h1>🔒 CELLBLOCK KINGS</h1><span><%= user.tag %> (Lvl <%= user.lvl %>)</span></header>
-<nav><a href="/home">Home</a> <a href="/chat">Chat</a> <a href="/leaderboard">Top 10</a> <% if(user.tag==='<%= process.env.ADMIN_TAG %>') { %><a href="/admin">Admin</a><% } %> <a href="/logout" style="color:#ff6b35">Logout</a></nav>
-<main>
-  <h2>Welcome to Ironhold</h2>
-  <div class="stats">
-    <div class="stat-box"><span>Cash</span><strong style="color:#4caf50">$<%= user.cash %></strong></div>
-    <div class="stat-box"><span>Nerve</span><strong style="color:#2196f3"><%= user.nrv %>/<%= user.max_nrv %></strong></div>
-  </div>
-  <h3>Available Crimes</h3>
-  <button class="crime-btn" onclick="doCrime(1)">🔫 Pick Pockets (Cost: 1 Nerve)</button>
-  <button class="crime-btn" onclick="doCrime(2)">📦 Smuggle Contraband (Cost: 2 Nerve)</button>
-
-<script>
-function doCrime(id) { fetch('/crime/'+id, {method:'POST'}).then(r=>r.json()).then(d=>{alert(d.msg); location.reload();}); }
-</script>
+    <h2>Welcome to Ironhold</h2>
+    <div class="stats">
+      <div class="card"><span style="color:#aaa;font-size:0.8em">CASH</span><h3 style="color:#4caf50;margin:5px 0">$<%= user.cash %></h3></div>
+      <div class="card"><span style="color:#aaa;font-size:0.8em">NERVE</span><h3 style="color:#2196f3;margin:5px 0"><%= user.nrv %>/<%= user.max_nrv %></h3></div>
+      <div class="card"><span style="color:#aaa;font-size:0.8em">ENERGY</span><h3 style="color:#ff9800;margin:5px 0"><%= user.en %>/<%= user.max_en %></h3></div>
+      <div class="card"><span style="color:#aaa;font-size:0.8em">EXP</span><h3 style="color:#ffd700;margin:5px 0"><%= user.exp %></h3></div>
+    </div>
+    <h3 style="color:#ff6b35; margin-top:20px;">Available Crimes</h3>
+    <button class="btn-action" onclick="doCrime(1)">🔫 Pick Pockets (Cost: 1 Nerve)</button>
+    <button class="btn-action" onclick="doCrime(2)">📦 Smuggle Contraband (Cost: 2 Nerve)</button>
+    <a href="/logout" style="color:#ff6b35;text-decoration:none;display:block;text-align:center;margin-top:30px;padding:15px;border:1px solid #ff6b35;border-radius:8px;">🚪 Logout</a>
+  </main>
   <%- include('partials/bottom-nav') %>
-</body></html>
+  <script>
+    function doCrime(id) { 
+      fetch('/crime/'+id, {method:'POST'}).then(r=>r.json()).then(d=>{
+        alert(d.msg); 
+        location.reload();
+      }); 
+    }
+  </script>
+</body>
+</html>

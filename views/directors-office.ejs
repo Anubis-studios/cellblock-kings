@@ -1,0 +1,29 @@
+<!DOCTYPE html><html><head><title>Director's Office</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div><div class="stat-bars"><div class="stat-bar"><span class="label">CREDITS</span><div class="value"><%= user.credits || 0 %></div></div></div></div>
+  <div class="game-layout">
+    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/directors-office" class="active">Director's Office</a><a href="/store">Store</a><a href="/logout">Sign Out</a></nav>
+    <main class="main-content">
+      <h2 style="color:#ff6b35;">DIRECTOR'S OFFICE</h2>
+      <p style="color:#a0a0a0;margin-bottom:20px;">Credits buy privileges. Credits are earned in the block.</p>
+      <div class="grid-2" style="margin-bottom:20px;">
+        <div class="card"><h3>KINGPIN VIP</h3><p style="font-size:0.9em;">20% tick regen, +0.5% interest, double bank cap, 20% transport discount, 20% market discount, 10% Med/Heist bribe discount, +2 backpack slots, badge.</p><p><strong>25 Credits · 7 days</strong></p><button class="btn btn-small">BUY NOW</button></div>
+        <div class="card"><h3>BACKPACK UPGRADE</h3><p style="font-size:0.9em;">+2 yard backpack slots. Currently: <%= user.backpack_slots || 5 %>.</p><p><strong>8 Credits</strong></p><button class="btn btn-small">BUY</button></div>
+        <div class="card"><h3>GUARD DOG AMENITY</h3><p style="font-size:0.9em;">A dog in your cell cuts the odds of a successful raid.</p><p><strong>12 Credits</strong></p><button class="btn btn-small" <%= user.has_guard_dog ? 'disabled' : '' %>><%= user.has_guard_dog ? 'OWNED' : 'BUY' %></button></div>
+        <div class="card"><h3>ALPHANUMERIC COMBO</h3><p style="font-size:0.9em;">Upgrade your cell combo to letters + digits. Free reset after any successful raid.</p><p><strong>15 Credits</strong></p><button class="btn btn-small">BUY</button></div>
+      </div>
+      <h3 style="color:#ff6b35;">AMENITIES FOR SALE</h3>
+      <div class="grid-3">
+        <% amenities.forEach(a => { %>
+          <div class="item-card">
+            <div class="name"><%= a.name %> <small class="type"><%= a.credits %>¢</small></div>
+            <div class="stats"><%= a.hp ? 'HP +'+a.hp : '' %> <%= a.str ? 'STR +'+a.str : '' %> <%= a.def ? 'DEF +'+a.def : '' %> <%= a.spd ? 'SPD +'+a.spd : '' %></div>
+            <div class="price">$<%= a.price %></div>
+            <button class="btn btn-small" onclick="buyAmenity(<%= a.id %>)">BUY</button>
+          </div>
+        <% }); %>
+      </div>
+    </main>
+  </div>
+  <script>function buyAmenity(id){fetch('/directors-office/buy/'+id,{method:'POST'}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}</script>
+</body></html>

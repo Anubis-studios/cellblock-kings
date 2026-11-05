@@ -1,0 +1,18 @@
+<!DOCTYPE html><html><head><title>Med Bay</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div></div>
+  <div class="game-layout">
+    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/med-bay" class="active">Med Bay</a><a href="/logout">Sign Out</a></nav>
+    <main class="main-content">
+      <h2 style="color:#ff6b35;">MED BAY</h2>
+      <p style="color:#a0a0a0;margin-bottom:20px;">Release brings you to 40% HP · bribe for 75%.</p>
+      <div class="card">
+        <p style="text-align:center;color:#a0a0a0;">You are walking free. Stay out of here.</p>
+        <div style="margin-top:20px;">
+          <p>Current HP: <strong><%= user.hp %> / <%= user.max_hp %></strong></p>
+          <p>Release HP: <strong>80</strong></p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body></html>

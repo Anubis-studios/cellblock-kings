@@ -1,0 +1,17 @@
+<!DOCTYPE html><html><head><title>Activity Log</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div></div>
+  <div class="game-layout">
+    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/activity" class="active">Activity Log</a><a href="/logout">Sign Out</a></nav>
+    <main class="main-content">
+      <h2 style="color:#ff6b35;">ACTIVITY LOG</h2>
+      <p style="color:#a0a0a0;margin-bottom:15px;">Your last 50 events</p>
+      <% (user.activity_log || []).slice().reverse().forEach(a => { %>
+        <div class="shout-msg">
+          <span class="time"><%= new Date(a.time).toLocaleString() %></span>
+          <p><%= a.msg %></p>
+        </div>
+      <% }); %>
+    </main>
+  </div>
+</body></html>

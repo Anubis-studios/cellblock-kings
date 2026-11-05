@@ -1,69 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Gym - Cellblock Kings</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
+<!DOCTYPE html><html><head><title>Gym</title><link rel="stylesheet" href="/css/style.css"></head>
 <body>
-  <header>
-    <h1>🔒 CELLBLOCK KINGS</h1>
-    <span><%= user.tag %> (Lvl <%= user.lvl %>)</span>
-  </header>
-  <nav>
-    <a href="/home">Home</a>
-    <a href="/gym">Gym</a> <a href="/market">Market</a> <a href="/inventory">Inventory</a> <a href="/inmates">Inmates</a>
-    <a href="/jobs">Jobs</a> <a href="/drugs">Drugs</a> <a href="/yard">Yard</a> <a href="/logout" style="color:#ff6b35">Logout</a>
-  </nav>
-  <main>
-    <h2>💪 Prison Gym</h2>
-    <p style="color:#a0a0a0; margin-bottom:15px;">Spend 2 Energy to train a stat. Higher Stamina = better gains!</p>
-    
-    <div class="stats">
-      <div class="stat-box">
-        <span>Strength</span>
-        <strong style="color:#ff6b35"><%= user.str %></strong>
+  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div></div>
+  <div class="game-layout">
+    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/crimes">Crimes</a><a href="/yard">Yard</a><a href="/gym" class="active">Gym</a><a href="/jobs">Jobs Board</a><a href="/inventory">Inventory</a><a href="/logout">Sign Out</a></nav>
+    <main class="main-content">
+      <h2 style="color:#ff6b35;">THE GYM</h2>
+      <p style="color:#a0a0a0;margin-bottom:20px;">5 NRG per session · effectiveness scales with Stamina and total stats</p>
+      <div class="grid-3">
+        <div class="card"><h3>STRENGTH</h3><p style="color:#a0a0a0;font-size:0.9em;">Heavy bag, barbells, bad intentions.</p><p>Base: <strong><%= user.str %></strong></p><p>Progress: <strong>0%</strong></p><button class="btn" onclick="train('str')">TRAIN - 5 NRG</button></div>
+        <div class="card"><h3>DEFENSE</h3><p style="color:#a0a0a0;font-size:0.9em;">Absorb the hit. Get up again.</p><p>Base: <strong><%= user.def %></strong></p><p>Progress: <strong>0%</strong></p><button class="btn" onclick="train('def')">TRAIN - 5 NRG</button></div>
+        <div class="card"><h3>SPEED</h3><p style="color:#a0a0a0;font-size:0.9em;">First to move, first to land.</p><p>Base: <strong><%= user.spd %></strong></p><p>Progress: <strong>0%</strong></p><button class="btn" onclick="train('spd')">TRAIN - 5 NRG</button></div>
       </div>
-      <div class="stat-box">
-        <span>Defense</span>
-        <strong style="color:#2196f3"><%= user.def %></strong>
-      </div>
-      <div class="stat-box">
-        <span>Speed</span>
-        <strong style="color:#4caf50"><%= user.spd %></strong>
-      </div>
-      <div class="stat-box">
-        <span>Energy</span>
-        <strong style="color:#ffd700"><%= user.en %>/<%= user.max_en %></strong>
-      </div>
-    </div>
-    
-    <h3>Training Stations</h3>
-    <button class="crime-btn" onclick="train('str')">🏋️ Weight Training (+STR)</button>
-    <button class="crime-btn" onclick="train('def')">🥊 Punching Bag (+DEF)</button>
-    <button class="crime-btn" onclick="train('spd')">🏃 Treadmill (+SPD)</button>
-    
-    <div style="margin-top:20px; padding:15px; background:#111; border-radius:5px;">
-      <h4 style="color:#ff6b35; margin-bottom:10px;">📊 Level Progress</h4>
-      <p>Level: <strong><%= user.lvl %></strong></p>
-      <p>EXP: <strong><%= user.exp %></strong> / <strong><%= user.lvl * 100 %></strong></p>
-      <div style="background:#333; height:20px; border-radius:10px; overflow:hidden; margin-top:10px;">
-        <div style="background:#ffd700; height:100%; width: <%= Math.min((user.exp / (user.lvl * 100)) * 100, 100) %>%;"></div>
-      </div>
-    </div>
-  </main>
-  <script>
-    function train(stat) {
-      fetch('/train', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({stat: stat})
-      })
-      .then(r => r.json())
-      .then(d => {
-        alert(d.msg);
-        location.reload();
-      });
-    }
-  </script>
-</body>
-</html>
+      <p style="color:#a0a0a0;margin-top:20px;">Total stats: <%= user.str + user.def + user.spd %>. Higher totals train slower — stamina keeps the gains coming.</p>
+    </main>
+  </div>
+  <script>function train(s){fetch('/gym/train',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({stat:s})}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}</script>
+</body></html>

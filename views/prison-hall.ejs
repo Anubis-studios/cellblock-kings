@@ -1,0 +1,78 @@
+<!DOCTYPE html><html><head><title>Prison Hall</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <div class="top-bar">
+    <div class="player-info">
+      <div class="avatar">👤</div>
+      <div><strong><%= user.tag %></strong><br><small>Lvl <%= user.lvl %> · <%= user.gender.toUpperCase() %></small></div>
+    </div>
+    <div class="stat-bars">
+      <div class="stat-bar"><span class="label">CASH</span><div class="value">$<%= user.cash %></div></div>
+      <div class="stat-bar"><span class="label">CREDITS</span><div class="value"><%= user.credits || 0 %></div></div>
+      <div class="stat-bar"><span class="label">HP</span><div class="value"><%= user.hp %>/<%= user.max_hp %></div></div>
+      <div class="stat-bar"><span class="label">NRV</span><div class="value"><%= user.nrv %>/<%= user.max_nrv %></div></div>
+      <div class="stat-bar"><span class="label">EN</span><div class="value"><%= user.en %>/<%= user.max_en %></div></div>
+      <div class="stat-bar"><span class="label">STM</span><div class="value"><%= user.stm %>/<%= user.max_stm %></div></div>
+    </div>
+  </div>
+  <div class="game-layout">
+    <nav class="sidebar">
+      <div class="section-title">The Block</div>
+      <a href="/prison-hall" class="active">Prison Hall</a>
+      <a href="/crimes">Crimes</a>
+      <a href="/yard">Yard</a>
+      <a href="/gym">Gym</a>
+      <a href="/jobs">Jobs Board</a>
+      <div class="section-title">Roster</div>
+      <a href="/inmates">All Inmates</a>
+      <a href="/hitlist">Hitlist</a>
+      <a href="/game-room">Game Room</a>
+      <div class="section-title">Cell</div>
+      <a href="/cell">My Cell</a>
+      <a href="/cell-notes">Cell Notes</a>
+      <a href="/inventory">Inventory</a>
+      <a href="/market">Market</a>
+      <a href="/bank">Bank</a>
+      <a href="/store">Store</a>
+      <div class="section-title">Comms</div>
+      <a href="/forums">Forums</a>
+      <a href="/shoutbox">Shoutbox</a>
+      <a href="/activity">Activity Log</a>
+      <div class="section-title">Other</div>
+      <a href="/directors-office">Director's Office</a>
+      <a href="/med-bay">Med Bay</a>
+      <a href="/guide">Guide / Wiki</a>
+      <a href="/contact">Contact</a>
+      <a href="/logout" style="color:#ff6b35;">Sign Out</a>
+    </nav>
+    <main class="main-content">
+      <h1 style="color:#ff6b35;margin-bottom:5px;"><%= prison.name.toUpperCase() %></h1>
+      <p style="color:#a0a0a0;margin-bottom:20px;"><%= prison.desc %></p>
+      <div class="grid-3" style="margin-bottom:20px;">
+        <div class="location-tile" onclick="location.href='/crimes'"><div class="icon">🚪</div><div class="name">MAIN BLOCK</div><div class="desc">Crimes · Cells</div></div>
+        <div class="location-tile" onclick="location.href='/yard'"><div class="icon">🌳</div><div class="name">THE YARD</div><div class="desc">Explore · Fight</div></div>
+        <div class="location-tile" onclick="location.href='/crimes?loc=mess_hall'"><div class="icon">🍽️</div><div class="name">MESS HALL</div><div class="desc">Crimes · Contraband</div></div>
+        <div class="location-tile" onclick="location.href='/market'"><div class="icon">🛒</div><div class="name">MARKET</div><div class="desc">Buy · Sell</div></div>
+        <div class="location-tile" onclick="location.href='/med-bay'"><div class="icon">➕</div><div class="name">MED BAY</div><div class="desc">Heal · Rest</div></div>
+        <div class="location-tile" onclick="location.href='/directors-office'"><div class="icon">👔</div><div class="name">DIRECTOR'S OFFICE</div><div class="desc">Credits · VIP</div></div>
+        <div class="location-tile" onclick="location.href='/game-room'"><div class="icon">🎮</div><div class="name">GAME ROOM</div><div class="desc">Blackjack · Pockets</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>TODAY ON THE BLOCK</h3>
+          <p>Level: <strong><%= user.lvl %> / 70</strong></p>
+          <p>Strength / Defense / Speed: <strong><%= user.str %> / <%= user.def %> / <%= user.spd %></strong></p>
+          <p>Battles won: <strong><%= user.battles_won || 0 %></strong></p>
+          <p>Muggings: <strong><%= user.muggings || 0 %></strong></p>
+          <p style="margin-top:10px;color:#a0a0a0;">Cash in hand can be mugged. Bank it in the Market district.</p>
+        </div>
+        <div class="card">
+          <h3>PRISON ROSTER</h3>
+          <% PRISONS = [{id:'ironhold',name:'Ironhold',minLvl:1},{id:'stonewall',name:'Stonewall',minLvl:5},{id:'pinecrest',name:'Pinecrest',minLvl:10},{id:'dustbowl',name:'Dustbowl',minLvl:15},{id:'blackridge',name:'Blackridge',minLvl:20}]; %>
+          <% PRISONS.forEach(p => { %>
+            <p><strong><%= p.name %></strong> <small style="color:#a0a0a0;">Lvl <%= p.minLvl %>-<%= p.minLvl+4 %></small> <%= p.id === user.prison ? '<span style="color:#4caf50;">Current</span>' : '<span style="color:#ff6b35;">Locked</span>' %></p>
+          <% }); %>
+        </div>
+      </div>
+    </main>
+  </div>
+</body></html>

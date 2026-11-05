@@ -1,0 +1,24 @@
+<!DOCTYPE html><html><head><title>Shoutbox</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div></div>
+  <div class="game-layout">
+    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/forums">Forums</a><a href="/shoutbox" class="active">Shoutbox</a><a href="/logout">Sign Out</a></nav>
+    <main class="main-content">
+      <h2 style="color:#ff6b35;">SHOUTBOX</h2>
+      <p style="color:#a0a0a0;margin-bottom:15px;">Global chat · keep it clean, keep it legal</p>
+      <div style="margin-bottom:20px;">
+        <% messages.forEach(m => { %>
+          <div class="shout-msg">
+            <span class="time"><%= new Date(m.time).toLocaleTimeString() %></span>
+            <span class="user"><%= m.user %></span>
+            <p><%= m.msg %></p>
+          </div>
+        <% }); %>
+      </div>
+      <form method="POST" style="display:flex;gap:10px;">
+        <input name="msg" placeholder="Say something..." style="flex:1;" required>
+        <button class="btn">SHOUT</button>
+      </form>
+    </main>
+  </div>
+</body></html>

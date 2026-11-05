@@ -1,0 +1,18 @@
+<!DOCTYPE html><html><head><title>Contact</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div></div>
+  <div class="game-layout">
+    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/guide">Guide</a><a href="/contact" class="active">Contact</a><a href="/logout">Sign Out</a></nav>
+    <main class="main-content">
+      <h2 style="color:#ff6b35;">CONTACT</h2>
+      <p style="color:#a0a0a0;margin-bottom:20px;">Warden's office · appeals, bugs, abuse reports</p>
+      <div class="card">
+        <p><strong>Inmate Tag:</strong> <%= user.tag %></p>
+        <p><strong>Email on file:</strong> <%= user.email %></p>
+        <p style="margin-top:15px;font-size:0.9em;color:#a0a0a0;">Messages leave the block by email. Copy the address and send from your own mail app — nothing is transmitted automatically.</p>
+        <button class="btn" style="margin-top:10px;">COPY CONTACT ADDRESS</button>
+        <p style="margin-top:10px;font-size:0.85em;color:#666;">warden@cellblockkings.example</p>
+      </div>
+    </main>
+  </div>
+</body></html>

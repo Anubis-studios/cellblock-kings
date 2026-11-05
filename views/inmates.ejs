@@ -1,53 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head><title>Inmates - Cellblock Kings</title><link rel="stylesheet" href="/css/style.css"></head>
+<!DOCTYPE html><html><head><title>All Inmates</title><link rel="stylesheet" href="/css/style.css"></head>
 <body>
-  <header><h1>🔒 CELLBLOCK KINGS</h1><span><%= user.tag %> (Lvl <%= user.lvl %>)</span></header>
-  <nav>
-    <a href="/home">Home</a> <a href="/gym">Gym</a> <a href="/market">Market</a> 
-    <a href="/inventory">Inventory</a> <a href="/inmates">Inmates</a> <a href="/bank">Bank</a> <a href="/hitlist">Hitlist</a> <a href="/cell">Cell</a> <a href="/jobs">Jobs</a> <a href="/drugs">Drugs</a> <a href="/yard">Yard</a> <a href="/logout" style="color:#ff6b35">Logout</a>
-  </nav>
-  <main>
-    <h2>👥 Prison Inmates</h2>
-    <p style="color:#a0a0a0; margin-bottom:15px;">Attack other inmates to steal 10% of their cash! (Costs 5 Energy)</p>
-    
-    <% if (user.hospitalized_until && user.hospitalized_until > now) { %>
-      <div style="background:#5a1a1a; padding:15px; border-radius:5px; margin-bottom:20px; border:1px solid #ff6b35;">
-        <h3 style="color:#ff6b35;">🏥 You are in the Med Bay!</h3>
-        <p>Recover your wounds. You can attack again in <%= Math.ceil((user.hospitalized_until - now) / 60000) %> minutes.</p>
+  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div></div>
+  <div class="game-layout">
+    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/crimes">Crimes</a><a href="/inmates" class="active">All Inmates</a><a href="/hitlist">Hitlist</a><a href="/inventory">Inventory</a><a href="/logout">Sign Out</a></nav>
+    <main class="main-content">
+      <h2 style="color:#ff6b35;">ALL INMATES</h2>
+      <p style="color:#a0a0a0;margin-bottom:15px;"><%= inmates.length %> on the roster · online status updates on the tick</p>
+      <div style="display:flex;gap:10px;margin-bottom:15px;">
+        <input type="text" placeholder="Search Inmate Tag..." style="flex:1;max-width:300px;">
+        <select onchange="location.href='/inmates?prison='+this.value+'&lvl=<%= lvlFilter %>'">
+          <option value="all" <%= prisonFilter==='all'?'selected':'' %>>All prisons</option>
+          <option value="ironhold" <%= prisonFilter==='ironhold'?'selected':'' %>>Ironhold</option>
+          <option value="stonewall" <%= prisonFilter==='stonewall'?'selected':'' %>>Stonewall</option>
+          <option value="pinecrest" <%= prisonFilter==='pinecrest'?'selected':'' %>>Pinecrest</option>
+          <option value="dustbowl" <%= prisonFilter==='dustbowl'?'selected':'' %>>Dustbowl</option>
+          <option value="blackridge" <%= prisonFilter==='blackridge'?'selected':'' %>>Blackridge</option>
+        </select>
+        <select onchange="location.href='/inmates?prison=<%= prisonFilter %>&lvl='+this.value">
+          <option value="all" <%= lvlFilter==='all'?'selected':'' %>>Any level</option>
+          <option value="1-5" <%= lvlFilter==='1-5'?'selected':'' %>>1-5</option>
+          <option value="6-10" <%= lvlFilter==='6-10'?'selected':'' %>>6-10</option>
+          <option value="11-20" <%= lvlFilter==='11-20'?'selected':'' %>>11-20</option>
+          <option value="21-70" <%= lvlFilter==='21-70'?'selected':'' %>>21-70</option>
+        </select>
       </div>
-    <% } %>
-
-    <div class="inmates-list">
-      <% inmates.forEach(inmate => { 
-        const inMedBay = inmate.hospitalized_until && inmate.hospitalized_until > now;
-        const medBayMins = inMedBay ? Math.ceil((inmate.hospitalized_until - now) / 60000) : 0;
-      %>
-        <div class="inmate-card <%= inMedBay ? 'medbay' : '' %>">
-          <div class="inmate-info">
-            <h4><%= inmate.tag %> <span style="color:#a0a0a0; font-size:0.8em;">(Lvl <%= inmate.lvl %>)</span></h4>
-            <p style="font-size:0.8em; color:#a0a0a0;">STR: <%= inmate.str %> | DEF: <%= inmate.def %> | SPD: <%= inmate.spd %></p>
-            <% if (inMedBay) { %>
-              <p style="color:#ff6b35; font-size:0.8em;">🏥 In Med Bay (<%= medBayMins %>m)</p>
-            <% } else { %>
-              <p style="color:#4caf50; font-size:0.8em;">🟢 Active | Cash: $<%= inmate.cash %></p>
-            <% } %>
-          </div>
-          <% if (!inMedBay && inmate.id !== user.id) { %>
-            <button class="attack-btn" onclick="attack(<%= inmate.id %>)">⚔️ Attack</button>
-          <% } %>
-        </div>
-      <% }) %>
-    </div>
-  </main>
-  <script>
-    function attack(id) {
-      if(!confirm('Are you sure you want to attack this inmate? (Costs 5 Energy)')) return;
-      fetch('/attack/'+id, {method:'POST'}).then(r=>r.json()).then(d=>{
-        alert(d.msg);
-        location.reload();
-      });
-    }
-  </script>
-</body>
-</html>
+      <table class="data-table">
+        <thead><tr><th>INMATE</th><th>LVL</th><th>PRISON</th><th>STATUS</th><th></th></tr></thead>
+        <tbody>
+          <% inmates.forEach(i => { %>
+            <tr>
+              <td><strong><%= i.tag %></strong></td>
+              <td><%= i.lvl %></td>
+              <td><%= i.prison || 'ironhold' %></td>
+              <td><span style="color:<%= i.online ? '#4caf50' : '#a0a0a0' %>">● <%= i.online ? 'online' : 'offline' %></span></td>
+              <td><button class="btn btn-small">VIEW</button></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </main>
+  </div>
+</body></html>

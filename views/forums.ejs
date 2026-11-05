@@ -1,0 +1,23 @@
+<!DOCTYPE html><html><head><title>Forums</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div></div>
+  <div class="game-layout">
+    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/forums" class="active">Forums</a><a href="/shoutbox">Shoutbox</a><a href="/logout">Sign Out</a></nav>
+    <main class="main-content">
+      <h2 style="color:#ff6b35;">FORUMS</h2>
+      <p style="color:#a0a0a0;margin-bottom:15px;">Block talk · no spam, no begging, no naming staff</p>
+      <div style="display:flex;gap:10px;margin-bottom:20px;">
+        <input type="text" id="threadTitle" placeholder="New thread title..." style="flex:1;">
+        <button class="btn" onclick="newThread()">START THREAD</button>
+      </div>
+      <% threads.forEach(t => { %>
+        <div class="forum-thread">
+          <div class="title"><%= t.title %></div>
+          <div class="meta"><%= t.author %> · <%= t.replies ? t.replies.length : 0 %> replies</div>
+          <button class="btn btn-small" style="margin-top:5px;">VIEW</button>
+        </div>
+      <% }); %>
+    </main>
+  </div>
+  <script>function newThread(){const t=document.getElementById('threadTitle').value;if(!t)return;fetch('/forums/new',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:t,content:''})}).then(()=>location.reload());}</script>
+</body></html>

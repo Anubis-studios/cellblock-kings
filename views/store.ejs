@@ -1,0 +1,21 @@
+<!DOCTYPE html><html><head><title>Store</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div><div class="stat-bars"><div class="stat-bar"><span class="label">CREDITS</span><div class="value"><%= user.credits || 0 %></div></div></div></div>
+  <div class="game-layout">
+    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/store" class="active">Store</a><a href="/logout">Sign Out</a></nav>
+    <main class="main-content">
+      <h2 style="color:#ff6b35;">STORE</h2>
+      <p style="color:#a0a0a0;margin-bottom:20px;">Moon handles the checkout — card details never touch this app.</p>
+      <div class="card" style="border-color:#ff6b35;">
+        <p style="color:#ff6b35;">⚠️ The store could not be reached. <button class="btn btn-small">RETRY</button></p>
+      </div>
+      <h3 style="color:#ff6b35;margin-top:20px;">WHAT A PURCHASE DOES IN THE BLOCK</h3>
+      <div class="grid-3">
+        <div class="card"><strong>MONTHLY</strong><p style="font-size:0.9em;color:#a0a0a0;">An active membership switches on Kingship VIP for the length of the period — 20% tick regen, double bank cap, market discount and the badge.</p></div>
+        <div class="card"><strong>ONE-TIME</strong><p style="font-size:0.9em;color:#a0a0a0;">A one-off purchase pays out 25 Prison Credits the first time it lands.</p></div>
+        <div class="card"><strong>REPEATABLE</strong><p style="font-size:0.9em;color:#a0a0a0;">Every repeatable purchase pays out 5 Prison Credits. Stack them as often as you like.</p></div>
+      </div>
+      <p style="color:#a0a0a0;margin-top:20px;font-size:0.9em;">Nothing in Cellblock Kings is locked behind Coins — every block, crime, mini-game and hit is reachable by playing. The shop only adds conveniences and the VIP badge.</p>
+    </main>
+  </div>
+</body></html>

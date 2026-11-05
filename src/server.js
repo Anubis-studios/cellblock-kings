@@ -76,6 +76,29 @@ app.get('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/login'));
 });
 
+// GYM PAGE
+app.get("/gym", auth, (req, res) => {
+  res.render("gym", { user: req.user });
+});
+
+// TRAIN AT GYM
+app.post("/train", auth, (req, res) => {
+  const { stat } = req.body;
+  const validStats = ["str", "def", "spd"];
+  if (!validStats.includes(stat)) return res.json({ msg: "Invalid stat!" });
+  if (req.user.en < 2) return res.json({ msg: "Not enough Energy! Need 2." });
+  const gain = Math.floor(1 + (req.user.stm / 50));
+  db.prepare(`UPDATE users SET ${stat}=${stat}+?, en=en-2, exp=exp+5 WHERE id=?`).run(gain, req.user.id);
+  const updatedUser = db.prepare("SELECT * FROM users WHERE id=?").get(req.user.id);
+  const expNeeded = updatedUser.lvl * 100;
+  if (updatedUser.exp >= expNeeded) {
+    db.prepare("UPDATE users SET lvl=lvl+1, max_hp=max_hp+50, max_en=max_en+2, max_nrv=max_nrv+1, hp=max_hp+50, en=max_en+2, nrv=max_nrv+1 WHERE id=?").run(req.user.id);
+    res.json({ msg: `✅ Trained +${gain} ${stat.toUpperCase()}! 🎉 LEVEL UP! Now level ${updatedUser.lvl + 1}!` });
+  } else {
+    res.json({ msg: `✅ Trained +${gain} ${stat.toUpperCase()}! (${updatedUser.exp}/${expNeeded} EXP to next level)` });
+  }
+});
+
 db.ready.then(() => {
   app.listen(process.env.PORT, () => console.log(`🔒 CELLBLOCK KINGS running on http://localhost:${process.env.PORT}`));
 });

@@ -38,6 +38,7 @@ class DB {
         vip INTEGER DEFAULT 0, prison_id INTEGER DEFAULT 1, online INTEGER DEFAULT 0
       );
       CREATE TABLE IF NOT EXISTS crimes (id INTEGER PRIMARY KEY, name TEXT, cost INT, reward_min INT, reward_max INT, exp_min INT, exp_max INT);
+      CREATE TABLE IF NOT EXISTS training (user_id INT PRIMARY KEY, str_train INT DEFAULT 0, def_train INT DEFAULT 0, spd_train INT DEFAULT 0);
       CREATE TABLE IF NOT EXISTS cells (user_id INT PRIMARY KEY, combo TEXT);
     `);
   }

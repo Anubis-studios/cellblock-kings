@@ -1,0 +1,18 @@
+<!DOCTYPE html><html><head><title>Admin Panel</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <header><h1>🔒 ADMIN PANEL</h1><span><%= user.tag %></span></header>
+  <nav><a href="/home">Home</a> <a href="/admin">Admin</a> <a href="/logout" style="color:#ff6b35">Logout</a></nav>
+  <main>
+    <h2>🛠️ Inmate Management</h2>
+    <div class="inmates-list">
+      <% users.forEach(u => { %>
+        <div class="inmate-card <%= u.banned ? 'medbay' : '' %>">
+          <div class="inmate-info">
+            <h4><%= u.tag %> (Lvl <%= u.lvl %>) <%= u.banned ? '[BANNED]' : '' %></h4>
+            <p>Cash: $<%= u.cash %></p>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </main>
+</body></html>

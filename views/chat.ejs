@@ -1,0 +1,17 @@
+<!DOCTYPE html><html><head><title>Shoutbox</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <header><h1>🔒 CELLBLOCK KINGS</h1><span><%= user.tag %></span></header>
+  <nav><a href="/home">Home</a> <a href="/chat">Chat</a> <a href="/leaderboard">Top 10</a> <a href="/logout" style="color:#ff6b35">Logout</a></nav>
+  <main>
+    <h2>💬 Prison Shoutbox</h2>
+    <form method="POST" style="display:flex; gap:10px; margin-bottom:20px;">
+      <input name="msg" placeholder="Say something..." style="flex:1;" required>
+      <button class="action-btn">Shout</button>
+    </form>
+    <div class="inmates-list">
+      <% messages.forEach(m => { %>
+        <div class="inmate-card"><div class="inmate-info"><h4><%= m.tag %></h4><p><%= m.msg %></p></div></div>
+      <% }) %>
+    </div>
+  </main>
+</body></html>

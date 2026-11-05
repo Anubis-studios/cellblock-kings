@@ -1,0 +1,25 @@
+<%- include('layout-header', { title: 'Friends', active: 'friends' }) %>
+<div class="tabs">
+  <button class="tab active">My Friends</button>
+  <button class="tab" onclick="location.href='/enemies'">My Enemies</button>
+  <button class="tab" onclick="location.href='/mail'">My Blocklist</button>
+  <button class="tab" onclick="location.href='/hitlist'">My Hits</button>
+</div>
+<div class="content-box">
+  <h3>My Friends</h3>
+  <% if (!user.friends || user.friends.length === 0) { %>
+    <p style="color:#888;text-align:center;">Aww... no friends. Lonely buddy?</p>
+  <% } else { %>
+    <% user.friends.forEach(f => { %>
+      <div style="background:#2a2a2a;border:1px solid #555;padding:10px;margin-bottom:10px;">
+        <p style="color:#4caf50;font-weight:bold;"><%= f %></p>
+      </div>
+    <% }); %>
+  <% } %>
+  <div style="margin-top:15px;">
+    <input type="text" placeholder="Add friend by tag" id="friendTag">
+    <button class="btn btn-primary" onclick="addFriend()">Add Friend</button>
+  </div>
+</div>
+<script>function addFriend(){const tag=document.getElementById('friendTag').value;if(!tag)return;fetch('/friends/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tag})}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}</script>
+<%- include('layout-footer') %>

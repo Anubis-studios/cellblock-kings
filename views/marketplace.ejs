@@ -1,0 +1,57 @@
+<%- include('layout-header', { title: 'Marketplace', active: 'marketplace' }) %>
+<div style="background:#1a1a1a;border:2px solid #555;padding:20px;margin-bottom:15px;">
+  <h2 style="color:#fff;margin-bottom:10px;">Marketplace</h2>
+  <p style="color:#aaa;font-size:11px;">What "society" would be complete without the buying, selling and bartering of ill-gotten goods?</p>
+  <div style="text-align:right;"><a href="/explore-prison" style="color:#4caf50;font-size:11px;">return to prison hall</a></div>
+</div>
+<div class="content-box">
+  <h3>The Open Market</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;">Here is where you can buy from and sell items to other inmates. Select a category to browse or create listings.</p>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px;">
+    <a href="/open-market?cat=items" style="text-decoration:none;">
+      <div style="background:#2a2a2a;border:2px solid #555;padding:20px;text-align:center;">
+        <div style="font-size:48px;">🧴</div>
+        <p style="color:#fff;font-weight:bold;">ITEMS</p>
+      </div>
+    </a>
+    <a href="/open-market?cat=drugs" style="text-decoration:none;">
+      <div style="background:#2a2a2a;border:2px solid #555;padding:20px;text-align:center;">
+        <div style="font-size:48px;">💊</div>
+        <p style="color:#fff;font-weight:bold;">DRUGS</p>
+      </div>
+    </a>
+    <a href="/open-market?cat=amenities" style="text-decoration:none;">
+      <div style="background:#2a2a2a;border:2px solid #555;padding:20px;text-align:center;">
+        <div style="font-size:48px;">📦</div>
+        <p style="color:#fff;font-weight:bold;">AMENITIES</p>
+      </div>
+    </a>
+    <a href="/open-market?cat=weapons" style="text-decoration:none;">
+      <div style="background:#2a2a2a;border:2px solid #555;padding:20px;text-align:center;">
+        <div style="font-size:48px;">🔪</div>
+        <p style="color:#fff;font-weight:bold;">WEAPONS</p>
+      </div>
+    </a>
+    <a href="/open-market?cat=armor" style="text-decoration:none;">
+      <div style="background:#2a2a2a;border:2px solid #555;padding:20px;text-align:center;">
+        <div style="font-size:48px;">🦺</div>
+        <p style="color:#fff;font-weight:bold;">ARMOR</p>
+      </div>
+    </a>
+    <a href="/open-market?cat=gear" style="text-decoration:none;">
+      <div style="background:#2a2a2a;border:2px solid #555;padding:20px;text-align:center;">
+        <div style="font-size:48px;">🔧</div>
+        <p style="color:#fff;font-weight:bold;">GEAR</p>
+      </div>
+    </a>
+    <a href="/open-market?cat=watchlist" style="text-decoration:none;">
+      <div style="background:#2a2a2a;border:2px solid #555;padding:20px;text-align:center;">
+        <div style="font-size:48px;">👁️</div>
+        <p style="color:#fff;font-weight:bold;">WATCHLIST</p>
+      </div>
+    </a>
+  </div>
+  <p style="color:#888;font-size:10px;text-align:center;margin-top:15px;">Click here to make deals in the forums</p>
+  <div style="text-align:right;"><button class="btn btn-small">back to marketplace</button></div>
+</div>
+<%- include('layout-footer') %>

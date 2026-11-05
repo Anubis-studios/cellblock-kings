@@ -1,0 +1,20 @@
+<%- include('layout-header', { title: 'The Warden', active: 'warden' }) %>
+<div style="background:#1a1a1a;border:2px solid #555;padding:20px;margin-bottom:15px;">
+  <h2 style="color:#fff;margin-bottom:10px;">The Warden</h2>
+  <div style="background:#2a2a2a;height:200px;position:relative;border:2px solid #555;overflow:hidden;">
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#666;font-size:48px;">👔</div>
+    <div style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a1a;padding:10px;border:1px solid #555;">
+      <p style="color:#aaa;font-size:11px;">Yeah, you think you're a tough guy, but standing before the man who basically controls your life is pretty fucking scary.</p>
+    </div>
+  </div>
+  <div style="text-align:right;"><a href="/explore-prison" style="color:#4caf50;font-size:11px;">return to prison hall</a></div>
+</div>
+<div class="content-box">
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+    <a href="/warden/redeem-favors" class="btn" style="text-decoration:none;text-align:center;">Redeem Favors</a>
+    <a href="/warden/get-favors" class="btn" style="text-decoration:none;text-align:center;">Get Favors</a>
+    <a href="/warden/earn-favors" class="btn" style="text-decoration:none;text-align:center;">Earn Favors</a>
+    <a href="/warden/become-respected" class="btn btn-primary" style="text-decoration:none;text-align:center;">Become Respected</a>
+  </div>
+</div>
+<%- include('layout-footer') %>

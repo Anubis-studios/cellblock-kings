@@ -1,0 +1,13 @@
+<%- include('layout-header', { title: 'Explore Prison', active: 'explore' }) %>
+<div style="background:#1a1a1a;border:2px solid #555;padding:20px;margin-bottom:15px;">
+  <h2 style="color:#fff;margin-bottom:10px;">Prison Hall</h2>
+  <div style="background:linear-gradient(180deg,#2a4a6f 0%,#1a3a5f 100%);height:300px;position:relative;border:2px solid #555;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(90deg,transparent,transparent 50px,rgba(0,0,0,0.1) 50px,rgba(0,0,0,0.1) 51px);"></div>
+    <div style="position:absolute;top:50px;left:100px;width:80px;height:100px;background:#4a4a4a;border:2px solid #666;"></div>
+    <div style="position:absolute;top:100px;left:250px;width:60px;height:80px;background:#ff6b35;border:2px solid #888;cursor:pointer;" onclick="location.href='/prison-yard'" title="Prison Yard"></div>
+    <div style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#2a2a2a;padding:10px;border:1px solid #555;max-width:80%;">
+      <p style="color:#aaa;font-size:11px;">Ugh, the stench of general population -- the walls reek of it. Shady and shifty looking individuals are everywhere you look. Better watch your back here.</p>
+    </div>
+  </div>
+</div>
+<%- include('layout-footer') %>

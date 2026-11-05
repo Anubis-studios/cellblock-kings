@@ -1,24 +1,19 @@
-<!DOCTYPE html><html><head><title>Shoutbox</title><link rel="stylesheet" href="/css/style.css"></head>
-<body>
-  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div></div>
-  <div class="game-layout">
-    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/forums">Forums</a><a href="/shoutbox" class="active">Shoutbox</a><a href="/logout">Sign Out</a></nav>
-    <main class="main-content">
-      <h2 style="color:#ff6b35;">SHOUTBOX</h2>
-      <p style="color:#a0a0a0;margin-bottom:15px;">Global chat · keep it clean, keep it legal</p>
-      <div style="margin-bottom:20px;">
-        <% messages.forEach(m => { %>
-          <div class="shout-msg">
-            <span class="time"><%= new Date(m.time).toLocaleTimeString() %></span>
-            <span class="user"><%= m.user %></span>
-            <p><%= m.msg %></p>
-          </div>
-        <% }); %>
+<%- include('layout-header', { title: 'Shoutbox', active: 'shoutbox' }) %>
+<div class="content-box">
+  <h3>Shoutbox</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;">Global chat · keep it clean, keep it legal</p>
+  <div style="background:#1a1a1a;border:1px solid #555;padding:15px;max-height:400px;overflow-y:auto;margin-bottom:15px;">
+    <% messages.forEach(m => { %>
+      <div style="border-bottom:1px solid #333;padding:8px 0;">
+        <span style="color:#4caf50;font-weight:bold;"><%= m.user %></span>
+        <span style="color:#666;font-size:10px;float:right;"><%= new Date(m.time).toLocaleTimeString() %></span>
+        <p style="color:#fff;margin-top:5px;"><%= m.msg %></p>
       </div>
-      <form method="POST" style="display:flex;gap:10px;">
-        <input name="msg" placeholder="Say something..." style="flex:1;" required>
-        <button class="btn">SHOUT</button>
-      </form>
-    </main>
+    <% }); %>
   </div>
-</body></html>
+  <form method="POST" style="display:flex;gap:10px;">
+    <input name="msg" placeholder="Say something..." style="flex:1;" required>
+    <button class="btn btn-primary">SHOUT</button>
+  </form>
+</div>
+<%- include('layout-footer') %>

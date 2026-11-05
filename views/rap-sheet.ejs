@@ -1,0 +1,84 @@
+<%- include('layout-header', { title: 'Rap Sheet', active: 'rap-sheet' }) %>
+<div class="upgrade-banner">
+  <div>
+    <h2>Upgrade Your Account!</h2>
+    <ul>
+      <li>Respected Prisoner badge</li>
+      <li>50% off Prison Transport</li>
+      <li>20% off Market Listing Fees</li>
+      <li>Reverse Energy faster in quick</li>
+      <li>Receive Points twice as quick</li>
+      <li>15% off Warden's Amenity Fees</li>
+      <li>Double bank max deposit</li>
+      <li>+4 extra backpack slots</li>
+    </ul>
+  </div>
+  <button class="upgrade-btn">CLICK TO UPGRADE</button>
+</div>
+<div class="tabs">
+  <button class="tab active">Rap Sheet</button>
+  <button class="tab" onclick="location.href='/my-account'">My Account</button>
+  <button class="tab" onclick="location.href='/profile'">Profile</button>
+  <button class="tab" onclick="location.href='/referrals'">Referrals</button>
+  <button class="tab" onclick="location.href='/transactions'">Transactions</button>
+  <button class="tab" onclick="location.href='/notes'">Notes</button>
+</div>
+<div class="content-box">
+  <h3>My Rap Sheet</h3>
+  <div class="stats-grid">
+    <div class="stat-row"><span class="label">Cash:</span><span class="value">$<%= user.cash %></span></div>
+    <div class="stat-row"><span class="label">HP:</span><span class="value"><%= user.hp %>/<%= user.max_hp %></span></div>
+    <div class="stat-row"><span class="label">Bank:</span><span class="value">$<%= user.bank_balance || 0 %></span></div>
+    <div class="stat-row"><span class="label">Energy:</span><span class="value"><%= user.en %>/<%= user.max_en %></span></div>
+    <div class="stat-row"><span class="label">Job:</span><span class="value"><%= user.job %></span></div>
+    <div class="stat-row"><span class="label">Stamina:</span><span class="value"><%= user.stm %>/<%= user.max_stm %></span></div>
+    <div class="stat-row"><span class="label">Cell Size:</span><span class="value"><%= user.cell_size %></span></div>
+    <div class="stat-row"><span class="label">Nerve:</span><span class="value"><%= user.nrv %>/<%= user.max_nrv %></span></div>
+  </div>
+</div>
+<div class="content-box">
+  <h3>Attributes</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:10px;">These numbers reflect your base attributes plus any changes made by weapons, armor and cell amenities.</p>
+  <div class="stats-grid">
+    <div class="stat-row"><span class="label">Strength:</span><span class="value"><%= user.str %></span></div>
+    <div class="stat-row"><span class="label">Defense:</span><span class="value"><%= user.def %></span></div>
+    <div class="stat-row"><span class="label">Speed:</span><span class="value"><%= user.spd %></span></div>
+    <div class="stat-row"><span class="label">Damage:</span><span class="value"><%= user.str %></span></div>
+  </div>
+</div>
+<div class="content-box">
+  <h3>Battle Stats</h3>
+  <div class="stats-grid">
+    <div class="stat-row"><span class="label">Won:</span><span class="value"><%= user.battles_won || 0 %></span></div>
+    <div class="stat-row"><span class="label">Total Battles:</span><span class="value"><%= user.total_battles || 0 %></span></div>
+    <div class="stat-row"><span class="label">Lost:</span><span class="value"><%= user.battles_lost || 0 %></span></div>
+    <div class="stat-row"><span class="label">Cash Stolen:</span><span class="value">$<%= user.cash_stolen || 0 %></span></div>
+  </div>
+</div>
+<div class="content-box">
+  <h3>Crime Stats</h3>
+  <div class="stats-grid">
+    <div class="stat-row"><span class="label">Attempted:</span><span class="value"><%= user.crimes_attempted || 0 %></span></div>
+    <div class="stat-row"><span class="label">Failed:</span><span class="value"><%= (user.crimes_attempted || 0) - (user.crimes_succeeded || 0) %></span></div>
+    <div class="stat-row"><span class="label">Succeeded:</span><span class="value"><%= user.crimes_succeeded || 0 %></span></div>
+    <div class="stat-row"><span class="label">Earnings:</span><span class="value">$<%= user.crime_earnings || 0 %></span></div>
+  </div>
+</div>
+<div class="content-box">
+  <h3>Hits Completed</h3>
+  <div class="stats-grid">
+    <div class="stat-row"><span class="label">Hits:</span><span class="value"><%= user.hits_completed || 0 %></span></div>
+    <div class="stat-row"><span class="label">Cash:</span><span class="value">$<%= user.hit_earnings || 0 %></span></div>
+    <div class="stat-row"><span class="label">Favors:</span><span class="value"><%= user.favors || 0 %></span></div>
+  </div>
+</div>
+<div class="content-box">
+  <h3>Latest News</h3>
+  <% news.forEach(n => { %>
+    <div class="stat-row" style="margin-bottom:5px;">
+      <span><strong><%= n.title %></strong> [<%= n.date %>]</span>
+      <a href="#" style="color:#4caf50;">read+</a>
+    </div>
+  <% }); %>
+</div>
+<%- include('layout-footer') %>

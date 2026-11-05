@@ -1,0 +1,33 @@
+<%- include('layout-header', { title: 'Open Market', active: 'marketplace' }) %>
+<div class="tabs">
+  <button class="tab <%= category === 'items' ? 'active' : '' %>" onclick="location.href='/open-market?cat=items'">Items</button>
+  <button class="tab <%= category === 'drugs' ? 'active' : '' %>" onclick="location.href='/open-market?cat=drugs'">Drugs</button>
+  <button class="tab <%= category === 'weapons' ? 'active' : '' %>" onclick="location.href='/open-market?cat=weapons'">Weapons</button>
+  <button class="tab <%= category === 'armor' ? 'active' : '' %>" onclick="location.href='/open-market?cat=armor'">Armor</button>
+  <button class="tab <%= category === 'gear' ? 'active' : '' %>" onclick="location.href='/open-market?cat=gear'">Gear</button>
+  <button class="tab <%= category === 'amenities' ? 'active' : '' %>" onclick="location.href='/open-market?cat=amenities'">Amenities</button>
+  <button class="tab <%= category === 'watchlist' ? 'active' : '' %>" onclick="location.href='/open-market?cat=watchlist'">My Watchlist</button>
+</div>
+<div class="content-box">
+  <h3><%= category.charAt(0).toUpperCase() + category.slice(1) %> Listings</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;">If anyone has listed <%= category %> for sale it will be shown below.</p>
+  <% if (listings.length === 0) { %>
+    <p style="color:#888;text-align:center;">There aren't any <%= category %> currently listed on New Jersey's market.</p>
+  <% } else { %>
+    <table class="data-table">
+      <thead><tr><th>Item</th><th>Seller</th><th>Price</th><th>Action</th></tr></thead>
+      <tbody>
+        <% listings.forEach(l => { %>
+          <tr>
+            <td><%= l.item_name %></td>
+            <td><%= l.seller %></td>
+            <td>$<%= l.price %></td>
+            <td><button class="btn btn-small">BUY</button></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  <% } %>
+  <div style="text-align:right;margin-top:15px;"><button class="btn btn-small">back to open market</button></div>
+</div>
+<%- include('layout-footer') %>

@@ -1,0 +1,22 @@
+<%- include('layout-header', { title: 'Prison Transport', active: 'transport' }) %>
+<div class="content-box">
+  <h3>Prison Transport</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;">Sick of New Jersey? Check out the list of prisons we have exchange programs set up with. If you meet the requirements and have the dough, hop on the bus!</p>
+  <p style="color:#f44336;font-size:11px;margin-bottom:15px;">Want 50% off prison transfer fees? Become RESPECTED now!</p>
+  <table class="data-table">
+    <thead><tr><th>Prison Name</th><th>Levels</th><th>Cell Size</th><th>Population</th><th>Cost</th></tr></thead>
+    <tbody>
+      <% prisons.forEach(p => { %>
+        <tr>
+          <td><strong style="color:<%= p.id === user.prison ? '#4caf50' : '#1a1a1a' %>;"><%= p.name %></strong> <%= p.id === user.prison ? '(Current)' : '' %></td>
+          <td><%= p.minLvl %>-<%= p.maxLvl %></td>
+          <td><%= p.cellSize %></td>
+          <td><%= p.pop.toLocaleString() %></td>
+          <td>$<%= p.cost.toLocaleString() %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <div style="text-align:right;margin-top:15px;"><button class="btn btn-small" onclick="location.href='/explore-prison'">back to prison yard</button></div>
+</div>
+<%- include('layout-footer') %>

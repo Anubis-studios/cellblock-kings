@@ -1,0 +1,16 @@
+<%- include('layout-header', { title: 'Battles', active: 'battles' }) %>
+<div class="content-box">
+  <h3>Battles</h3>
+  <p style="color:#666;font-size:11px;">Challenge other inmates to battles!</p>
+  <div style="margin:15px 0;">
+    <input type="text" placeholder="Opponent's tag" id="opponent">
+    <button class="btn btn-primary" onclick="challenge()">Challenge</button>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-row"><span class="label">Battles Won:</span><span class="value"><%= user.battles_won || 0 %></span></div>
+    <div class="stat-row"><span class="label">Battles Lost:</span><span class="value"><%= user.battles_lost || 0 %></span></div>
+    <div class="stat-row"><span class="label">Win Rate:</span><span class="value"><%= user.total_battles > 0 ? Math.round((user.battles_won / user.total_battles) * 100) : 0 %>%</span></div>
+  </div>
+</div>
+<script>function challenge(){const opp=document.getElementById('opponent').value;if(!opp)return alert('Enter opponent tag');fetch('/battles/attack',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({targetTag:opp})}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}</script>
+<%- include('layout-footer') %>

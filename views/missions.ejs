@@ -1,0 +1,20 @@
+<%- include('layout-header', { title: 'Missions', active: 'missions' }) %>
+<div class="content-box">
+  <h3>Active Missions</h3>
+  <% if (!user.missions || user.missions.length === 0) { %>
+    <p style="color:#888;text-align:center;">You have no active missions. Check back later.</p>
+  <% } else { %>
+    <% user.missions.forEach(m => { %>
+      <div style="background:#2a2a2a;border:1px solid #555;padding:15px;margin-bottom:10px;">
+        <h4 style="color:#fff;"><%= m.title %></h4>
+        <p style="color:#aaa;font-size:11px;"><%= m.description %></p>
+        <p style="color:#4caf50;">Reward: $<%= m.reward %></p>
+      </div>
+    <% }); %>
+  <% } %>
+</div>
+<div class="content-box">
+  <h3>Past Missions</h3>
+  <p style="color:#888;text-align:center;">You haven't completed any missions yet.</p>
+</div>
+<%- include('layout-footer') %>

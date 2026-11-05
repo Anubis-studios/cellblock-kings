@@ -1,29 +1,47 @@
-<!DOCTYPE html><html><head><title>Game Room</title><link rel="stylesheet" href="/css/style.css"></head>
-<body>
-  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div><div class="stat-bars"><div class="stat-bar"><span class="label">CASH</span><div class="value">$<%= user.cash %></div></div></div></div>
-  <div class="game-layout">
-    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/game-room" class="active">Game Room</a><a href="/logout">Sign Out</a></nav>
-    <main class="main-content">
-      <h2 style="color:#ff6b35;">GAME ROOM</h2>
-      <p style="color:#a0a0a0;margin-bottom:20px;">Cash only · 10% house tax on winnings</p>
-      <div class="tabs" id="gameTabs">
-        <button class="tab active" onclick="showGame('blackjack')">BLACKJACK (100 plays)</button>
-        <button class="tab" onclick="showGame('highlow')">HIGH OR LOW (200 plays)</button>
-        <button class="tab" onclick="showGame('rps')">ROCK-PAPER-SCISSORS (100 plays)</button>
-        <button class="tab" onclick="showGame('hex')">HEX-MATCH (100 plays)</button>
-        <button class="tab" onclick="showGame('pockets')">PRISON POCKETS (100 plays)</button>
-        <button class="tab" onclick="showGame('hockey')">RAZOR HOCKEY (100 plays)</button>
-      </div>
-      <div class="card" id="gameArea">
-        <p>Select a game to play. Bet $100 minimum.</p>
-        <input type="number" id="betAmount" value="100" placeholder="Bet amount">
-        <button class="btn" onclick="playGame()">ROLL / DEAL</button>
-      </div>
-    </main>
+<%- include('layout-header', { title: 'Game Room', active: 'game-room' }) %>
+<div style="background:#1a1a1a;border:2px solid #555;padding:20px;margin-bottom:15px;">
+  <h2 style="color:#fff;margin-bottom:10px;">Recreation Room</h2>
+  <div style="background:#2a2a2a;height:300px;position:relative;border:2px solid #555;overflow:hidden;">
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#666;font-size:48px;">🎮</div>
+    <div style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a1a;padding:10px;border:1px solid #555;">
+      <p style="color:#aaa;font-size:11px;">Kind of "buzzer" chill out with some casual gaming... though it's anything but casual if you lose to the wrong person...</p>
+    </div>
   </div>
-  <script>
-    let currentGame = 'blackjack';
-    function showGame(g) { currentGame = g; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); event.target.classList.add('active'); }
-    function playGame() { const bet = document.getElementById('betAmount').value; fetch('/minigame/'+currentGame,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bet})}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();}); }
-  </script>
-</body></html>
+  <div style="text-align:right;"><a href="/marketplace" style="color:#4caf50;font-size:11px;">return to marketplace</a></div>
+</div>
+<div class="content-box">
+  <h3>Available Games</h3>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;">
+    <div style="background:#2a2a2a;border:2px solid #555;padding:15px;">
+      <h4 style="color:#fff;">Blackjack</h4>
+      <p style="color:#aaa;font-size:11px;">Beat the dealer to 21!</p>
+      <button class="btn btn-small">PLAY</button>
+    </div>
+    <div style="background:#2a2a2a;border:2px solid #555;padding:15px;">
+      <h4 style="color:#fff;">High or Low</h4>
+      <p style="color:#aaa;font-size:11px;">Guess if the next card is higher or lower!</p>
+      <button class="btn btn-small">PLAY</button>
+    </div>
+    <div style="background:#2a2a2a;border:2px solid #555;padding:15px;">
+      <h4 style="color:#fff;">Rock-Paper-Scissors</h4>
+      <p style="color:#aaa;font-size:11px;">Classic hand game!</p>
+      <button class="btn btn-small">PLAY</button>
+    </div>
+    <div style="background:#2a2a2a;border:2px solid #555;padding:15px;">
+      <h4 style="color:#fff;">Hex-Match</h4>
+      <p style="color:#aaa;font-size:11px;">Match the hex codes!</p>
+      <button class="btn btn-small">PLAY</button>
+    </div>
+    <div style="background:#2a2a2a;border:2px solid #555;padding:15px;">
+      <h4 style="color:#fff;">Prison Pockets</h4>
+      <p style="color:#aaa;font-size:11px;">Pick the right pocket!</p>
+      <button class="btn btn-small">PLAY</button>
+    </div>
+    <div style="background:#2a2a2a;border:2px solid #555;padding:15px;">
+      <h4 style="color:#fff;">Razor Hockey</h4>
+      <p style="color:#aaa;font-size:11px;">Fast-paced action!</p>
+      <button class="btn btn-small">PLAY</button>
+    </div>
+  </div>
+</div>
+<%- include('layout-footer') %>

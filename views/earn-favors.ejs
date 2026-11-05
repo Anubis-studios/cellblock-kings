@@ -1,0 +1,33 @@
+<%- include('layout-header', { title: 'Earn Favors', active: 'warden' }) %>
+<div class="tabs">
+  <button class="tab" onclick="location.href='/warden/redeem-favors'">Redeem Favors</button>
+  <button class="tab" onclick="location.href='/warden/get-favors'">Get Favors</button>
+  <button class="tab active">Earn Favors</button>
+  <button class="tab" onclick="location.href='/warden/become-respected'">Become Respected</button>
+</div>
+<div class="content-box">
+  <h3>Earn Favors</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;">The Warden has all this shit to do, and just doesn't want to. If you do it... he would probably be thankful enough to owe you a favor or two.</p>
+  <div style="background:#1a1a1a;border:1px solid #555;padding:15px;">
+    <p style="color:#f44336;font-weight:bold;margin-bottom:10px;">PAY ATTENTION TO THE OFFER REQUIREMENTS!</p>
+    <ul style="color:#aaa;font-size:11px;margin-left:20px;">
+      <li>Some surveys require a valid email address. It doesn't have to be your MAIN email address, but it should be valid.</li>
+      <li>Lastly, for best results, DISABLE ANY AD or POPUP BLOCKERS!</li>
+    </ul>
+  </div>
+  <div style="background:#fff;padding:20px;margin-top:15px;min-height:300px;">
+    <p style="color:#333;text-align:center;">Complete Offers to earn Favors!</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:15px;">
+      <div style="background:#ddd;padding:20px;text-align:center;">Offer 1</div>
+      <div style="background:#ddd;padding:20px;text-align:center;">Offer 2</div>
+      <div style="background:#ddd;padding:20px;text-align:center;">Offer 3</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:20px;margin-top:20px;">
+      <button class="btn" style="background:#4caf50;">All Offers</button>
+      <button class="btn">New + Trending</button>
+      <button class="btn">My Offers</button>
+    </div>
+  </div>
+  <div style="text-align:right;margin-top:15px;"><button class="btn btn-small" onclick="location.href='/warden'">back to warden</button></div>
+</div>
+<%- include('layout-footer') %>

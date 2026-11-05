@@ -1,0 +1,39 @@
+<%- include('layout-header', { title: 'Become Respected', active: 'warden' }) %>
+<div class="tabs">
+  <button class="tab" onclick="location.href='/warden/redeem-favors'">Redeem Favors</button>
+  <button class="tab" onclick="location.href='/warden/get-favors'">Get Favors</button>
+  <button class="tab" onclick="location.href='/warden/earn-favors'">Earn Favors</button>
+  <button class="tab active">Become Respected</button>
+</div>
+<div class="content-box">
+  <h3>Become a Respected Prisoner</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;">Want to have the Warden spread the word that you're a Respected Prisoner? He'll do it if the price is right. Check out your options below. Click here to see the benefits.</p>
+  <div style="background:#1a1a1a;border:1px solid #555;padding:15px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:15px;border-bottom:1px solid #333;">
+      <div>
+        <strong style="color:#fff;">Respected - 30 Days</strong>
+        <span style="color:#ffd700;margin-left:10px;">$12.00</span>
+      </div>
+      <p style="color:#aaa;font-size:11px;">You will receive all the benefits of being a Respected Prisoner for 30 days, as well as $30,000 and 10 favors.</p>
+      <button class="btn btn-small" style="background:#0070ba;">PAY with PayPal</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:15px;border-bottom:1px solid #333;">
+      <div>
+        <strong style="color:#fff;">Respected - 60 Days</strong>
+        <span style="color:#ffd700;margin-left:10px;">$20.00</span>
+      </div>
+      <p style="color:#aaa;font-size:11px;">You will receive all the benefits of being a Respected Prisoner for 60 days, as well as $60,000 and 20 favors.</p>
+      <button class="btn btn-small" style="background:#0070ba;">PAY with PayPal</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:15px;">
+      <div>
+        <strong style="color:#fff;">Respected - 90 Days</strong>
+        <span style="color:#ffd700;margin-left:10px;">$30.00</span>
+      </div>
+      <p style="color:#aaa;font-size:11px;">You will receive all the benefits of being a Respected Prisoner for 90 days, as well as $120,000 and 40 favors.</p>
+      <button class="btn btn-small" style="background:#0070ba;">PAY with PayPal</button>
+    </div>
+  </div>
+  <div style="text-align:right;margin-top:15px;"><button class="btn btn-small" onclick="location.href='/warden'">back to warden</button></div>
+</div>
+<%- include('layout-footer') %>

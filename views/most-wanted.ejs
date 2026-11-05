@@ -1,0 +1,19 @@
+<%- include('layout-header', { title: 'Most Wanted', active: 'most-wanted' }) %>
+<div class="content-box">
+  <h3>Most Wanted List</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;">The top 50 inmates by level:</p>
+  <table class="data-table">
+    <thead><tr><th>Rank</th><th>Inmate</th><th>Level</th><th>Prison</th></tr></thead>
+    <tbody>
+      <% wanted.forEach((w, i) => { %>
+        <tr>
+          <td><%= i + 1 %></td>
+          <td><a href="/profile/<%= w.tag %>" style="color:#4caf50;"><%= w.tag %></a></td>
+          <td><%= w.lvl %></td>
+          <td><%= w.prison %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+<%- include('layout-footer') %>

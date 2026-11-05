@@ -1,0 +1,45 @@
+<%- include('layout-header', { title: 'Get Favors', active: 'warden' }) %>
+<div class="tabs">
+  <button class="tab" onclick="location.href='/warden/redeem-favors'">Redeem Favors</button>
+  <button class="tab active">Get Favors</button>
+  <button class="tab" onclick="location.href='/warden/earn-favors'">Earn Favors</button>
+  <button class="tab" onclick="location.href='/warden/become-respected'">Become Respected</button>
+</div>
+<div class="content-box">
+  <h3>Get Favors</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;">It's always great to have the Warden owe you a favor or two. Click here to see the benefits.</p>
+  <div style="background:#1a1a1a;border:1px solid #555;padding:15px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #333;">
+      <div><strong style="color:#4caf50;">45 Favors</strong> <span style="color:#ffd700;">$5.00</span></div>
+      <p style="color:#aaa;font-size:11px;">You will be granted 45 favors from the Warden.</p>
+      <button class="btn btn-small">Buy Now</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #333;">
+      <div><strong style="color:#4caf50;">100 Favors</strong> <span style="color:#ffd700;">$9.00</span></div>
+      <p style="color:#aaa;font-size:11px;">You will be granted 100 favors from the Warden.</p>
+      <button class="btn btn-small">Buy Now</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #333;">
+      <div><strong style="color:#4caf50;">170 Favors</strong> <span style="color:#ffd700;">$15.00</span></div>
+      <p style="color:#aaa;font-size:11px;">You will be granted 170 favors from the Warden.</p>
+      <button class="btn btn-small">Buy Now</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #333;">
+      <div><strong style="color:#4caf50;">300 Favors</strong> <span style="color:#ffd700;">$26.00</span></div>
+      <p style="color:#aaa;font-size:11px;">You will be granted 300 favors from the Warden.</p>
+      <button class="btn btn-small">Buy Now</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #333;">
+      <div><strong style="color:#4caf50;">600 Favors</strong> <span style="color:#ffd700;">$40.00</span></div>
+      <p style="color:#aaa;font-size:11px;">You will be granted 600 favors from the Warden.</p>
+      <button class="btn btn-small">Buy Now</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;">
+      <div><strong style="color:#4caf50;">1000 Favors</strong> <span style="color:#ffd700;">$75.00</span></div>
+      <p style="color:#aaa;font-size:11px;">You will be granted 1,000 favors from the Warden.</p>
+      <button class="btn btn-small">Buy Now</button>
+    </div>
+  </div>
+  <div style="text-align:right;margin-top:15px;"><button class="btn btn-small" onclick="location.href='/warden'">back to warden</button></div>
+</div>
+<%- include('layout-footer') %>

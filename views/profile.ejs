@@ -1,0 +1,29 @@
+<%- include('layout-header', { title: 'Profile', active: 'rap-sheet' }) %>
+<div class="tabs">
+  <button class="tab" onclick="location.href='/rap-sheet'">Rap Sheet</button>
+  <button class="tab" onclick="location.href='/my-account'">My Account</button>
+  <button class="tab active">Profile</button>
+  <button class="tab" onclick="location.href='/referrals'">Referrals</button>
+  <button class="tab" onclick="location.href='/transactions'">Transactions</button>
+  <button class="tab" onclick="location.href='/notes'">Notes</button>
+</div>
+<div class="content-box">
+  <h3>About Me</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:10px;">This will be displayed on your profile</p>
+  <textarea id="aboutMe" style="width:100%;min-height:150px;"><%= user.about_me || '' %></textarea>
+  <p style="color:#888;font-size:10px;">Please keep in mind that our rules follow the community guidelines. No spam, no advertising other games/sites in your profile.</p>
+</div>
+<div class="content-box">
+  <h3>Forum Signature</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:10px;">This will be displayed at the bottom of all of your forum posts</p>
+  <textarea id="forumSig" style="width:100%;min-height:100px;"><%= user.forum_signature || '' %></textarea>
+  <p style="color:#888;font-size:10px;">Please keep in mind that our rules follow the community guidelines. No spam, no advertising other games/sites in your signature.</p>
+  <button class="btn btn-primary" onclick="saveProfile()">Update Profile</button>
+</div>
+<script>
+function saveProfile() {
+  fetch('/profile/update', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ about_me: document.getElementById('aboutMe').value, forum_signature: document.getElementById('forumSig').value }) })
+    .then(r => r.json()).then(d => { alert(d.msg); });
+}
+</script>
+<%- include('layout-footer') %>

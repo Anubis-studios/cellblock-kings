@@ -1,35 +1,76 @@
-<!DOCTYPE html><html><head><title>Inventory</title><link rel="stylesheet" href="/css/style.css"></head>
-<body>
-  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div><div class="stat-bars"><div class="stat-bar"><span class="label">CASH</span><div class="value">$<%= user.cash %></div></div></div></div>
-  <div class="game-layout">
-    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/cell">My Cell</a><a href="/inventory" class="active">Inventory</a><a href="/market">Market</a><a href="/logout">Sign Out</a></nav>
-    <main class="main-content">
-      <h2 style="color:#ff6b35;">INVENTORY</h2>
-      <p style="color:#a0a0a0;margin-bottom:20px;">Use · Sell · Send to a friend in the same prison</p>
-      <h3 style="color:#ff6b35;">EQUIPPED</h3>
-      <div class="grid-2" style="margin-bottom:20px;">
-        <div class="card"><strong>WEAPON</strong><br><small style="color:#a0a0a0;">Nothing equipped</small><br><button class="btn btn-small">EQUIP</button></div>
-        <div class="card"><strong>ARMOR</strong><br><small style="color:#a0a0a0;">Nothing but jumpsuit</small></div>
+<%- include('layout-header', { title: 'Inventory', active: 'inventory' }) %>
+<div class="tabs">
+  <button class="tab" onclick="location.href='/equipment'">Armor & Weapons</button>
+  <button class="tab active">Items & Drugs</button>
+</div>
+<div class="content-box">
+  <h3>My Inventory</h3>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0;">
+    <% inv.filter(i => i.type === 'item').forEach(i => { %>
+      <div style="background:#2a2a2a;border:2px solid #555;padding:10px;text-align:center;">
+        <div style="font-size:32px;">📦</div>
+        <p style="font-size:11px;"><%= i.name %></p>
+        <p style="font-size:10px;color:#888;">x<%= i.qty %></p>
+        <button class="btn btn-small" onclick="useItem('<%= i._id %>')">USE</button>
       </div>
-      <h3 style="color:#ff6b35;">STASH</h3>
-      <% if (inv.length === 0) { %><p style="color:#a0a0a0;">Empty. Visit the Market.</p><% } else { %>
-        <div class="grid-2">
-          <% inv.forEach(i => { %>
-            <div class="item-card">
-              <div class="name"><%= i.name %> <%= i.qty > 1 ? '×'+i.qty : '' %></div>
-              <div class="stats"><%= i.effect ? '+'+i.value+' '+i.effect.toUpperCase() : '' %> <%= i.str ? 'STR +'+i.str : '' %> <%= i.def ? 'DEF +'+i.def : '' %></div>
-              <div style="display:flex;gap:5px;margin-top:5px;">
-                <button class="btn btn-small" onclick="useItem('<%= i._id %>')">USE</button>
-                <button class="btn btn-secondary btn-small" onclick="sellItem('<%= i._id %>')">SELL</button>
-              </div>
-            </div>
-          <% }); %>
-        </div>
-      <% } %>
-    </main>
+    <% }); %>
   </div>
-  <script>
-    function useItem(id){fetch('/inventory/use/'+id,{method:'POST'}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}
-    function sellItem(id){fetch('/inventory/sell/'+id,{method:'POST'}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}
-  </script>
-</body></html>
+</div>
+<div class="content-box">
+  <h3>My Drugs</h3>
+  <% if (inv.filter(i => i.type === 'drug').length === 0) { %>
+    <p style="color:#888;text-align:center;">You don't have any drugs in your inventory.</p>
+  <% } else { %>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0;">
+      <% inv.filter(i => i.type === 'drug').forEach(i => { %>
+        <div style="background:#2a2a2a;border:2px solid #555;padding:10px;text-align:center;">
+          <div style="font-size:32px;">💊</div>
+          <p style="font-size:11px;"><%= i.name %></p>
+          <p style="font-size:10px;color:#888;">x<%= i.qty %></p>
+          <button class="btn btn-small" onclick="useItem('<%= i._id %>')">USE</button>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+</div>
+<div class="content-box">
+  <h3>Quick Items</h3>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0;">
+    <% (user.quick_items || []).forEach((qi, idx) => { %>
+      <div style="background:#2a2a2a;border:2px solid #555;padding:10px;text-align:center;">
+        <div style="font-size:32px;">⚡</div>
+        <p style="font-size:11px;"><%= qi.name %></p>
+        <p style="font-size:10px;color:#888;">x<%= qi.qty %></p>
+        <button class="btn btn-small btn-danger">REMOVE</button>
+      </div>
+    <% }); %>
+    <div style="background:#2a2a2a;border:2px dashed #555;padding:10px;text-align:center;">
+      <select id="quickItemSelect" style="width:100%;margin-bottom:5px;">
+        <option>Select an item...</option>
+        <% inv.forEach(i => { %><option value="<%= i._id %>"><%= i.name %></option><% }); %>
+      </select>
+      <button class="btn btn-small">ADD</button>
+    </div>
+  </div>
+</div>
+<div class="content-box">
+  <h3>My Backpack</h3>
+  <% if (!user.backpack || user.backpack.length === 0) { %>
+    <p style="color:#888;text-align:center;">Empty Backpack</p>
+    <p style="color:#666;font-size:10px;text-align:center;">Need more backpack slots? Visit The Warden!</p>
+  <% } else { %>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:15px 0;">
+      <% user.backpack.forEach(item => { %>
+        <div style="background:#2a2a2a;border:2px solid #555;padding:10px;text-align:center;">
+          <div style="font-size:32px;">🎒</div>
+          <p style="font-size:11px;"><%= item.name %></p>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+  <div style="text-align:right;"><button class="btn btn-small">go back</button></div>
+</div>
+<script>
+function useItem(id) { fetch('/inventory/use', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ itemId: id }) }).then(r => r.json()).then(d => { alert(d.msg); location.reload(); }); }
+</script>
+<%- include('layout-footer') %>

@@ -1,0 +1,34 @@
+<%- include('layout-header', { title: 'Equipment', active: 'equipment' }) %>
+<div class="tabs">
+  <button class="tab active">Armor & Weapons</button>
+  <button class="tab" onclick="location.href='/inventory'">Items & Drugs</button>
+</div>
+<div class="content-box">
+  <h3>My Equipment</h3>
+  <p style="color:#666;font-size:11px;">Adding armor and weapons will increase your attack and defense. Gear will add additional benefits. You can only equip one armor, weapon and gear at a time.</p>
+  <div style="display:flex;gap:20px;margin:15px 0;">
+    <div style="text-align:center;">
+      <div style="width:100px;height:100px;background:#2a2a2a;border:2px solid #555;display:flex;align-items:center;justify-content:center;font-size:48px;">👤</div>
+    </div>
+    <div style="flex:1;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div><label style="color:#666;font-size:11px;font-weight:bold;">Weapon:</label><div style="background:#1a1a1a;border:1px solid #555;padding:10px;min-height:60px;"><%= user.equipment?.weapon ? ITEMS.find(i => i.id === user.equipment.weapon)?.name : 'Nothing equipped' %></div></div>
+        <div><label style="color:#666;font-size:11px;font-weight:bold;">Armor:</label><div style="background:#1a1a1a;border:1px solid #555;padding:10px;min-height:60px;"><%= user.equipment?.armor ? ITEMS.find(i => i.id === user.equipment.armor)?.name : 'Nothing equipped' %></div></div>
+        <div style="grid-column:span 2;"><label style="color:#666;font-size:11px;font-weight:bold;">Gear:</label><div style="background:#1a1a1a;border:1px solid #555;padding:10px;min-height:60px;"><%= user.equipment?.gear ? ITEMS.find(i => i.id === user.equipment.gear)?.name : 'Nothing equipped' %></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content-box">
+  <h3>My Weapons</h3>
+  <p style="color:#888;text-align:center;">You don't have any unequipped weapons.</p>
+</div>
+<div class="content-box">
+  <h3>My Armor</h3>
+  <p style="color:#888;text-align:center;">You don't have any unequipped armor.</p>
+</div>
+<div class="content-box">
+  <h3>My Gear</h3>
+  <p style="color:#888;text-align:center;">You don't have any unequipped gear.</p>
+</div>
+<%- include('layout-footer') %>

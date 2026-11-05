@@ -1,0 +1,16 @@
+<%- include('layout-header', { title: 'Gangs', active: 'gangs' }) %>
+<div class="content-box">
+  <h3>Known Gangs</h3>
+  <% if (gangs.length === 0) { %>
+    <p style="color:#888;">No gangs have been formed yet. Be the first!</p>
+  <% } else { %>
+    <% gangs.forEach(g => { %>
+      <div style="background:#2a2a2a;border:1px solid #555;padding:15px;margin-bottom:10px;">
+        <h4 style="color:#fff;"><%= g.name %></h4>
+        <p style="color:#aaa;font-size:11px;">Leader: <%= g.leader_tag %> | Members: <%= g.members.length %></p>
+        <p style="color:#4caf50;">Bank: $<%= g.bank || 0 %></p>
+      </div>
+    <% }); %>
+  <% } %>
+</div>
+<%- include('layout-footer') %>

@@ -1,0 +1,30 @@
+<%- include('layout-header', { title: 'Redeem Favors', active: 'warden' }) %>
+<div class="tabs">
+  <button class="tab" onclick="location.href='/warden/redeem-favors'">Redeem Favors</button>
+  <button class="tab" onclick="location.href='/warden/get-favors'">Get Favors</button>
+  <button class="tab" onclick="location.href='/warden/earn-favors'">Earn Favors</button>
+  <button class="tab" onclick="location.href='/warden/become-respected'">Become Respected</button>
+</div>
+<div class="content-box">
+  <h3>Redeem Favors</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;">Current Cell Size: <strong><%= user.cell_size %></strong> (regardless of prison level)</p>
+  <div style="background:#1a1a1a;border:1px solid #555;padding:15px;margin-bottom:15px;">
+    <p style="color:#fff;font-size:14px;margin-bottom:10px;">Need a bigger cell? I might be able to help you with that...</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div><label style="color:#aaa;">Add Column (1 slot):</label><br><input type="number" value="8" style="width:100px;"><br><button class="btn btn-small">8 Favors</button> <button class="btn btn-small">Redeem</button></div>
+      <div><label style="color:#aaa;">Add Row (1 slot):</label><br><input type="number" value="8" style="width:100px;"><br><button class="btn btn-small">8 Favors</button> <button class="btn btn-small">Redeem</button></div>
+    </div>
+  </div>
+  <div style="background:#1a1a1a;border:1px solid #555;padding:15px;">
+    <h4 style="color:#fff;margin-bottom:10px;">Cell Combo Strength</h4>
+    <p style="color:#666;font-size:11px;">You can make it harder for people to raid your cell by adding additional characters to your combo.</p>
+    <p style="color:#fff;margin:10px 0;">Currently, your combo may consist of the following characters:</p>
+    <p style="color:#4caf50;font-size:18px;text-align:center;letter-spacing:5px;">0 1 2 3 4 5 6 7 8 9</p>
+    <div style="margin:15px 0;"><label style="color:#aaa;">Add Character (letter a-z):</label><br><input type="text" maxlength="1" style="width:100px;"><br><button class="btn btn-small">50 Favors</button> <button class="btn btn-small">Redeem</button></div>
+  </div>
+  <div style="text-align:right;margin-top:15px;">
+    <button class="btn btn-small" onclick="location.href='/my-cell'">back to my cell</button>
+    <button class="btn btn-small" onclick="location.href='/warden'">back to warden</button>
+  </div>
+</div>
+<%- include('layout-footer') %>

@@ -1,0 +1,35 @@
+<%- include('layout-header', { title: profile.tag + ' Profile', active: 'inmates' }) %>
+<div class="content-box">
+  <h3><%= profile.tag %>'s Rap Sheet</h3>
+  <div style="display:flex;gap:20px;margin-bottom:15px;">
+    <div style="width:100px;height:100px;background:#555;border:2px solid #888;display:flex;align-items:center;justify-content:center;font-size:48px;">👤</div>
+    <div style="flex:1;">
+      <p style="color:#4caf50;font-size:18px;font-weight:bold;"><%= profile.tag %></p>
+      <p style="color:#666;">Level: <%= profile.lvl %></p>
+      <div style="background:#333;height:20px;border-radius:10px;overflow:hidden;margin:10px 0;">
+        <div style="background:linear-gradient(90deg,#4caf50,#8bc34a);height:100%;width:<%= (profile.hp/profile.max_hp)*100 %>%;"></div>
+      </div>
+      <p style="color:#1a1a1a;font-size:11px;">Health: <%= profile.hp %>/<%= profile.max_hp %></p>
+      <p style="color:#666;font-size:11px;">Cash: $<%= profile.cash %></p>
+      <p style="color:#666;font-size:11px;">Prison: <%= profile.prison %></p>
+      <p style="color:#666;font-size:11px;">Incarcerated: <%= Math.floor((Date.now() - profile.created) / 86400000) %> days</p>
+      <p style="color:#666;font-size:11px;">Last Seen: <%= profile.last_seen ? Math.floor((Date.now() - profile.last_seen) / 60000) + ' minutes ago' : 'Unknown' %></p>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0;">
+    <button class="btn btn-small">ATTACK</button>
+    <button class="btn btn-small">MUG</button>
+    <button class="btn btn-small">SPY</button>
+    <button class="btn btn-small">RAID</button>
+  </div>
+</div>
+<div class="content-box">
+  <h3>Quick Actions</h3>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+    <button class="btn" onclick="location.href='/warden'">The Warden</button>
+    <button class="btn" onclick="location.href='/profile'">My Profile</button>
+    <button class="btn" onclick="location.href='/rap-sheet'">My Stats</button>
+    <button class="btn" onclick="location.href='/marketplace'">My Sales</button>
+  </div>
+</div>
+<%- include('layout-footer') %>

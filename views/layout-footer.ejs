@@ -1,0 +1,21 @@
+    </main>
+  </div>
+  <div class="footer">
+    <div>© 2026 Cellblock Kings. All rights reserved.</div>
+    <div class="footer-stats">
+      <div>Total Inmates: <strong>21,695</strong></div>
+      <div>Online Today: <strong>36</strong></div>
+      <div>Game Time: <strong id="footerTime">3:26 pm</strong></div>
+    </div>
+  </div>
+  <script>
+    function updateGameTime() {
+      const now = new Date();
+      document.getElementById('gameTime').textContent = now.toLocaleTimeString();
+      document.getElementById('footerTime').textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+    updateGameTime();
+    setInterval(updateGameTime, 1000);
+  </script>
+</body>
+</html>

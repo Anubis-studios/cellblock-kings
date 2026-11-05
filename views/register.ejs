@@ -2,15 +2,15 @@
 <body class="auth-page">
   <div class="auth-box">
     <h1>🔒 CELLBLOCK KINGS</h1>
-    <% if (error) { %><p style="color:#ff6b35;"><%= error %></p><% } %>
+    <% if (error) { %><p style="color:#f44336;"><%= error %></p><% } %>
     <form method="POST">
       <input name="tag" placeholder="Inmate Tag (3-16 chars)" required minlength="3" maxlength="16">
       <select name="gender"><option value="male">Male</option><option value="female">Female</option></select>
       <input name="email" type="email" placeholder="Email" required>
       <input name="pass" type="password" placeholder="Passcode" required minlength="6">
       <input name="confirm" type="password" placeholder="Confirm Passcode" required>
-      <button class="btn" style="width:100%;">BEGIN MY SENTENCE</button>
+      <button class="btn btn-primary" style="width:100%;">BEGIN MY SENTENCE</button>
     </form>
-    <p style="text-align:center;margin-top:15px;"><a href="/login" style="color:#ff6b35;">Back to Sign In</a></p>
+    <p style="text-align:center;margin-top:15px;"><a href="/login" style="color:#4caf50;">Back to Sign In</a></p>
   </div>
 </body></html>

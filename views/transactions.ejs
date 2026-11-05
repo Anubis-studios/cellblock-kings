@@ -1,0 +1,25 @@
+<%- include('layout-header', { title: 'Transactions', active: 'rap-sheet' }) %>
+<div class="tabs">
+  <button class="tab" onclick="location.href='/rap-sheet'">Rap Sheet</button>
+  <button class="tab" onclick="location.href='/my-account'">My Account</button>
+  <button class="tab" onclick="location.href='/profile'">Profile</button>
+  <button class="tab" onclick="location.href='/referrals'">Referrals</button>
+  <button class="tab active">Transactions</button>
+  <button class="tab" onclick="location.href='/notes'">Notes</button>
+</div>
+<div class="content-box">
+  <h3>My Transactions</h3>
+  <table class="data-table">
+    <thead><tr><th>Date</th><th>Package</th><th>Amount</th></tr></thead>
+    <tbody>
+      <% if (!user.transactions || user.transactions.length === 0) { %>
+        <tr><td colspan="3" style="text-align:center;color:#888;">No Transactions</td></tr>
+      <% } else { %>
+        <% user.transactions.forEach(t => { %>
+          <tr><td><%= new Date(t.date).toLocaleDateString() %></td><td><%= t.package %></td><td>$<%= t.amount %></td></tr>
+        <% }); %>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+<%- include('layout-footer') %>

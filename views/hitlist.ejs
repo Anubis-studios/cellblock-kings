@@ -1,34 +1,29 @@
-<!DOCTYPE html><html><head><title>Hitlist</title><link rel="stylesheet" href="/css/style.css"></head>
-<body>
-  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div></div>
-  <div class="game-layout">
-    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/inmates">All Inmates</a><a href="/hitlist" class="active">Hitlist</a><a href="/game-room">Game Room</a><a href="/logout">Sign Out</a></nav>
-    <main class="main-content">
-      <h2 style="color:#ff6b35;">HITLIST</h2>
-      <p style="color:#a0a0a0;margin-bottom:20px;">10% posting fee · only online hospitalizations count · single or shared</p>
-      <div class="card">
-        <h3>POST A HIT</h3>
-        <div class="grid-4">
-          <select id="targetId"><% allInmates.forEach(i => { %><option value="<%= i._id %>"><%= i.tag %> - Lvl <%= i.lvl %></option><% }); %></select>
-          <input type="number" id="bounty" placeholder="Bounty $">
-          <input type="number" id="duration" placeholder="Days" value="7">
-          <label style="display:flex;align-items:center;gap:5px;"><input type="checkbox" id="shared" style="width:auto;"> Shared (1/2 split)</label>
-        </div>
-        <button class="btn" onclick="postHit()">POST - 10% FEE</button>
-      </div>
-      <h3 style="color:#ff6b35;margin:20px 0 10px;">OPEN CONTRACTS</h3>
-      <% if (hits.length === 0) { %><p style="color:#a0a0a0;">No active hits.</p><% } else { %>
-        <% hits.forEach(h => { %>
-          <div class="card">
-            <p><strong><%= h.target_tag || 'Unknown' %></strong> <small style="color:#a0a0a0;">Lvl ?</small></p>
-            <p>Bounty: <strong style="color:#4caf50;">$<%= h.bounty %></strong></p>
-            <p>Goal: <%= h.duration || 7 %>x min in Med Bay</p>
-            <p>Poster: <%= h.poster %></p>
-            <button class="btn btn-small">TAKE CONTRACT</button>
-          </div>
-        <% }); %>
-      <% } %>
-    </main>
+<%- include('layout-header', { title: 'Hitlist', active: 'hitlist' }) %>
+<div class="content-box">
+  <h3>The Hitlist</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;">10% posting fee · only online hospitalizations count · single or shared</p>
+  <div class="content-box" style="background:#1a1a1a;">
+    <h4>Post a Hit</h4>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:10px;margin:15px 0;">
+      <select id="targetId"><% allInmates.forEach(i => { %><option value="<%= i._id %>"><%= i.tag %> - Lvl <%= i.lvl %></option><% }); %></select>
+      <input type="number" id="bounty" placeholder="Bounty $">
+      <input type="number" id="duration" placeholder="Days" value="7">
+      <label style="display:flex;align-items:center;gap:5px;"><input type="checkbox" id="shared" style="width:auto;"> Shared (1/2 split)</label>
+    </div>
+    <button class="btn btn-primary" onclick="postHit()">POST - 10% FEE</button>
   </div>
-  <script>function postHit(){const t=document.getElementById('targetId').value,b=document.getElementById('bounty').value,d=document.getElementById('duration').value;if(!b)return alert('Enter bounty');fetch('/hitlist/post',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({targetId:t,bounty:parseInt(b),duration:parseInt(d)})}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}</script>
-</body></html>
+  <h4 style="color:#1a1a1a;margin:20px 0 10px;">Open Contracts</h4>
+  <% if (hits.length === 0) { %><p style="color:#888;">No active hits.</p><% } else { %>
+    <% hits.forEach(h => { %>
+      <div class="content-box" style="background:#1a1a1a;">
+        <p><strong style="color:#fff;"><%= h.target_tag || 'Unknown' %></strong> <small style="color:#888;">Lvl ?</small></p>
+        <p style="color:#4caf50;">Bounty: $<%= h.bounty %></p>
+        <p style="color:#666;font-size:11px;">Goal: <%= h.duration || 7 %>x min in Med Bay</p>
+        <p style="color:#666;font-size:11px;">Poster: <%= h.poster %></p>
+        <button class="btn btn-small">TAKE CONTRACT</button>
+      </div>
+    <% }); %>
+  <% } %>
+</div>
+<script>function postHit(){const t=document.getElementById('targetId').value,b=document.getElementById('bounty').value,d=document.getElementById('duration').value;if(!b)return alert('Enter bounty');fetch('/hitlist/post',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({targetId:t,bounty:parseInt(b),duration:parseInt(d)})}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}</script>
+<%- include('layout-footer') %>

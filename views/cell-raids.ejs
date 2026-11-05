@@ -1,0 +1,61 @@
+<%- include('layout-header', { title: 'Cell Raids', active: 'my-cell' }) %>
+<div class="tabs">
+  <button class="tab" onclick="location.href='/my-cell'">My Cell</button>
+  <button class="tab active">Cell Raids</button>
+</div>
+<div class="content-box">
+  <h3>Cell Combination</h3>
+  <p style="color:#666;font-size:11px;">Set your combination to prevent other inmates raiding your cell. It will cost you $999 to change your combination.</p>
+  <div style="display:flex;gap:10px;justify-content:center;margin:15px 0;">
+    <% for (let i = 0; i < 5; i++) { %>
+      <input type="text" maxlength="1" value="<%= (user.combo || '00000')[i] %>" style="width:40px;text-align:center;font-size:20px;" class="combo-digit">
+    <% } %>
+  </div>
+  <button class="btn btn-primary" onclick="updateCombo()">change cell combo</button>
+  <p style="color:#666;font-size:11px;margin-top:10px;">Your combo may consist of the following characters:</p>
+  <p style="color:#1a1a1a;font-size:18px;text-align:center;letter-spacing:5px;font-weight:bold;">0 1 2 3 4 5 6 7 8 9</p>
+  <p style="color:#888;font-size:10px;text-align:center;">Protect your cell by making your combo HARDER! <a href="/warden/buy-amenities" style="color:#4caf50;">CLICK HERE!</a></p>
+</div>
+<div class="content-box">
+  <h3>Outgoing Raids</h3>
+  <p style="color:#666;font-size:11px;">Here are your most recent raid attempts:</p>
+  <table class="data-table">
+    <thead><tr><th>Date</th><th>Target</th><th>Combo</th></tr></thead>
+    <tbody>
+      <% if (!user.outgoing_raids || user.outgoing_raids.length === 0) { %>
+        <tr><td colspan="3" style="text-align:center;color:#888;">No Raid Attempts</td></tr>
+      <% } else { %>
+        <% user.outgoing_raids.slice(-10).reverse().forEach(r => { %>
+          <tr><td><%= new Date(r.date).toLocaleDateString() %></td><td><%= r.target %></td><td><%= r.combo %></td></tr>
+        <% }); %>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+<div class="content-box">
+  <h3>Incoming Raids</h3>
+  <p style="color:#666;font-size:11px;">Raid attempts on your cell since you last changed your combo:</p>
+  <table class="data-table">
+    <thead><tr><th>Date</th><th>Invader</th><th>Combo</th></tr></thead>
+    <tbody>
+      <% if (!user.incoming_raids || user.incoming_raids.length === 0) { %>
+        <tr><td colspan="3" style="text-align:center;color:#888;">No Raid Attempts</td></tr>
+      <% } else { %>
+        <% user.incoming_raids.slice(-10).reverse().forEach(r => { %>
+          <tr><td><%= new Date(r.date).toLocaleDateString() %></td><td><%= r.invader %></td><td><%= r.combo %></td></tr>
+        <% }); %>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+<script>
+function updateCombo() {
+  const digits = document.querySelectorAll('.combo-digit');
+  let combo = '';
+  digits.forEach(d => combo += d.value);
+  if (combo.length !== 5) return alert('Must be 5 digits');
+  fetch('/my-cell/combo', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ combo }) })
+    .then(r => r.json()).then(d => { alert(d.msg); location.reload(); });
+}
+</script>
+<%- include('layout-footer') %>

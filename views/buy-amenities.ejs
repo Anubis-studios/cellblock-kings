@@ -1,0 +1,25 @@
+<%- include('layout-header', { title: 'Buy Amenities', active: 'warden' }) %>
+<div class="content-box">
+  <h3>Buy Cell Amenities</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;">Amenities can be added to your cell to boost your stats. Amenities purchased here will be in your cell under PROTECTED AMENITIES.</p>
+  <% const categories = ['Electronics', 'Media', 'Furniture', 'Books', 'Accessories', 'Special']; %>
+  <% categories.forEach(cat => { %>
+    <h4 style="color:#4caf50;margin:15px 0 10px;"><%= cat %></h4>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+      <% amenities.filter(a => a.category === cat).forEach(a => { %>
+        <div style="background:#2a2a2a;border:2px solid #555;padding:10px;text-align:center;">
+          <div style="font-size:32px;">📦</div>
+          <p style="font-size:11px;color:#fff;"><%= a.name %></p>
+          <p style="font-size:10px;color:#aaa;"><%= a.cost %> Favors</p>
+          <button class="btn btn-small" onclick="buyAmenity(<%= a.id %>)">REDEEM</button>
+        </div>
+      <% }); %>
+    </div>
+  <% }); %>
+  <div style="text-align:right;margin-top:15px;">
+    <button class="btn btn-small" onclick="location.href='/my-cell'">back to my cell</button>
+    <button class="btn btn-small" onclick="location.href='/warden'">back to warden</button>
+  </div>
+</div>
+<script>function buyAmenity(id){fetch('/my-cell/amenity',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amenityId:id})}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}</script>
+<%- include('layout-footer') %>

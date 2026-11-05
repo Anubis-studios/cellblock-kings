@@ -1,31 +1,45 @@
-<!DOCTYPE html><html><head><title>Bank</title><link rel="stylesheet" href="/css/style.css"></head>
-<body>
-  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div></div>
-  <div class="game-layout">
-    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/market">Market</a><a href="/bank" class="active">Bank</a><a href="/logout">Sign Out</a></nav>
-    <main class="main-content">
-      <h2 style="color:#ff6b35;">BANK - IRONHOLD</h2>
-      <p style="color:#a0a0a0;margin-bottom:20px;">Deposits are level-capped. Balance is lost on transfer.</p>
-      <% if (!account) { %>
-        <div class="card">
-          <p>No account here yet. Opening costs $2,500.</p>
-          <button class="btn" onclick="openAccount()">OPEN ACCOUNT</button>
-        </div>
-      <% } else { %>
-        <div class="card">
-          <p>Balance: <strong style="color:#4caf50;">$<%= account.balance %></strong></p>
-          <div style="display:flex;gap:10px;margin-top:10px;">
-            <input type="number" id="amt" placeholder="Amount" style="flex:1;">
-            <button class="btn" onclick="deposit()">DEPOSIT</button>
-            <button class="btn btn-secondary" onclick="withdraw()">WITHDRAW</button>
-          </div>
-        </div>
-      <% } %>
-    </main>
-  </div>
-  <script>
-    function openAccount(){fetch('/bank/open',{method:'POST'}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}
-    function deposit(){const a=document.getElementById('amt').value;if(!a)return;fetch('/bank/deposit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:parseInt(a)})}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}
-    function withdraw(){const a=document.getElementById('amt').value;if(!a)return;fetch('/bank/withdraw',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:parseInt(a)})}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}
-  </script>
-</body></html>
+<%- include('layout-header', { title: 'Bank', active: 'bank' }) %>
+<div class="content-box">
+  <h3>Bank Account</h3>
+  <p style="color:#666;font-size:11px;">You don't want to leave your funds unattended do you? Deposit your funds here at the bank and not only will we safeguard them, but you'll earn interest as well!</p>
+  <% if (!account) { %>
+    <div class="stats-grid" style="margin:15px 0;">
+      <div class="stat-row"><span class="label">Balance:</span><span class="value">$0</span></div>
+      <div class="stat-row"><span class="label">Earning:</span><span class="value">$0</span></div>
+      <div class="stat-row"><span class="label">Interest Rate:</span><span class="value">5%</span></div>
+      <div class="stat-row"><span class="label">Interest:</span><span class="value">0 hours, 22 minutes</span></div>
+      <div class="stat-row"><span class="label">Max Deposit:</span><span class="value">$10,000</span></div>
+      <div class="stat-row"><span class="label">Payable:</span><span class="value">Payable</span></div>
+    </div>
+    <p style="color:#666;font-size:11px;margin:15px 0;">Want to DOUBLE your bank's max deposit? Become RESPECTED now!</p>
+    <div style="display:flex;gap:10px;margin:15px 0;">
+      <input type="number" id="openAmount" placeholder="Deposit" style="flex:1;">
+      <button class="btn" onclick="openAccount()">GO</button>
+      <input type="number" placeholder="Withdraw" style="flex:1;">
+      <button class="btn">GO</button>
+    </div>
+  <% } else { %>
+    <div class="stats-grid" style="margin:15px 0;">
+      <div class="stat-row"><span class="label">Balance:</span><span class="value">$<%= account.balance %></span></div>
+      <div class="stat-row"><span class="label">Earning:</span><span class="value">$<%= Math.floor(account.balance * account.interest_rate / 100) %></span></div>
+      <div class="stat-row"><span class="label">Interest Rate:</span><span class="value"><%= account.interest_rate %>%</span></div>
+      <div class="stat-row"><span class="label">Max Deposit:</span><span class="value">$<%= account.max_deposit %></span></div>
+    </div>
+    <div style="display:flex;gap:10px;margin:15px 0;">
+      <input type="number" id="depositAmount" placeholder="Deposit" style="flex:1;">
+      <button class="btn" onclick="deposit()">GO</button>
+      <input type="number" id="withdrawAmount" placeholder="Withdraw" style="flex:1;">
+      <button class="btn" onclick="withdraw()">GO</button>
+    </div>
+  <% } %>
+</div>
+<div class="content-box">
+  <h3>Recent Transactions</h3>
+  <p style="color:#888;text-align:center;">No transactions yet.</p>
+</div>
+<script>
+function openAccount() { const amt = document.getElementById('openAmount').value; if (!amt) return; fetch('/bank/open', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ amount: parseInt(amt) }) }).then(r => r.json()).then(d => { alert(d.msg); location.reload(); }); }
+function deposit() { const amt = document.getElementById('depositAmount').value; if (!amt) return; fetch('/bank/deposit', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ amount: parseInt(amt) }) }).then(r => r.json()).then(d => { alert(d.msg); location.reload(); }); }
+function withdraw() { const amt = document.getElementById('withdrawAmount').value; if (!amt) return; fetch('/bank/withdraw', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ amount: parseInt(amt) }) }).then(r => r.json()).then(d => { alert(d.msg); location.reload(); }); }
+</script>
+<%- include('layout-footer') %>

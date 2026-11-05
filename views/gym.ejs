@@ -1,18 +1,59 @@
-<!DOCTYPE html><html><head><title>Gym</title><link rel="stylesheet" href="/css/style.css"></head>
-<body>
-  <div class="top-bar"><div class="player-info"><strong><%= user.tag %></strong></div></div>
-  <div class="game-layout">
-    <nav class="sidebar"><a href="/prison-hall">Prison Hall</a><a href="/crimes">Crimes</a><a href="/yard">Yard</a><a href="/gym" class="active">Gym</a><a href="/jobs">Jobs Board</a><a href="/inventory">Inventory</a><a href="/logout">Sign Out</a></nav>
-    <main class="main-content">
-      <h2 style="color:#ff6b35;">THE GYM</h2>
-      <p style="color:#a0a0a0;margin-bottom:20px;">5 NRG per session · effectiveness scales with Stamina and total stats</p>
-      <div class="grid-3">
-        <div class="card"><h3>STRENGTH</h3><p style="color:#a0a0a0;font-size:0.9em;">Heavy bag, barbells, bad intentions.</p><p>Base: <strong><%= user.str %></strong></p><p>Progress: <strong>0%</strong></p><button class="btn" onclick="train('str')">TRAIN - 5 NRG</button></div>
-        <div class="card"><h3>DEFENSE</h3><p style="color:#a0a0a0;font-size:0.9em;">Absorb the hit. Get up again.</p><p>Base: <strong><%= user.def %></strong></p><p>Progress: <strong>0%</strong></p><button class="btn" onclick="train('def')">TRAIN - 5 NRG</button></div>
-        <div class="card"><h3>SPEED</h3><p style="color:#a0a0a0;font-size:0.9em;">First to move, first to land.</p><p>Base: <strong><%= user.spd %></strong></p><p>Progress: <strong>0%</strong></p><button class="btn" onclick="train('spd')">TRAIN - 5 NRG</button></div>
-      </div>
-      <p style="color:#a0a0a0;margin-top:20px;">Total stats: <%= user.str + user.def + user.spd %>. Higher totals train slower — stamina keeps the gains coming.</p>
-    </main>
+<%- include('layout-header', { title: 'The Gym', active: 'gym' }) %>
+<div class="content-box">
+  <h3>The Gym</h3>
+  <p style="color:#666;font-size:11px;">If you'd like to be better, faster and stronger, you'll need to train up. You need energy to train, and each exercise takes a specific attribute.</p>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;">Decide how much energy to use and an attribute to train below.</p>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:15px 0;">
+    <div style="background:#2a2a2a;border:2px solid #555;padding:15px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:10px;">🏋️</div>
+      <p style="font-size:24px;font-weight:bold;color:#fff;">10</p>
+      <button class="btn" onclick="train('str')">Train Strength</button>
+    </div>
+    <div style="background:#2a2a2a;border:2px solid #555;padding:15px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:10px;">🏃</div>
+      <p style="font-size:24px;font-weight:bold;color:#fff;">10</p>
+      <button class="btn" onclick="train('spd')">Train Speed</button>
+    </div>
+    <div style="background:#2a2a2a;border:2px solid #555;padding:15px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:10px;">🥊</div>
+      <p style="font-size:24px;font-weight:bold;color:#fff;">10</p>
+      <button class="btn" onclick="train('def')">Train Defense</button>
+    </div>
   </div>
-  <script>function train(s){fetch('/gym/train',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({stat:s})}).then(r=>r.json()).then(d=>{alert(d.msg);location.reload();});}</script>
-</body></html>
+</div>
+<div class="content-box">
+  <h3>Attributes</h3>
+  <div class="stats-grid">
+    <div class="stat-row"><span class="label">Strength:</span><span class="value"><%= user.str %></span></div>
+    <div class="stat-row"><span class="label">Defense:</span><span class="value"><%= user.def %></span></div>
+    <div class="stat-row"><span class="label">Speed:</span><span class="value"><%= user.spd %></span></div>
+    <div class="stat-row"><span class="label">Damage:</span><span class="value"><%= user.str %></span></div>
+  </div>
+  <p style="color:#888;font-size:10px;">*Note: The above attributes reflect your base attributes, and not any changes made from weapons, armor or cell amenities!</p>
+</div>
+<div class="content-box">
+  <h3>Training History</h3>
+  <div style="background:#fff;padding:15px;border-radius:3px;">
+    <p style="color:#333;text-align:center;font-size:12px;">Base Stat Growth</p>
+    <div style="display:flex;justify-content:center;gap:20px;margin:10px 0;">
+      <span style="color:#2196f3;font-size:11px;">— Strength</span>
+      <span style="color:#333;font-size:11px;">— Defense</span>
+      <span style="color:#f44336;font-size:11px;">— Speed</span>
+    </div>
+    <canvas id="trainingChart" width="400" height="200"></canvas>
+  </div>
+  <div style="text-align:right;margin-top:15px;"><button class="btn btn-small" onclick="location.href='/explore-prison'">back to prison yard</button></div>
+</div>
+<script>
+function train(stat) { fetch('/gym/train', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ stat }) }).then(r => r.json()).then(d => { alert(d.msg); location.reload(); }); }
+const canvas = document.getElementById('trainingChart');
+if (canvas) {
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#ddd';
+  ctx.beginPath();
+  ctx.moveTo(0, 100);
+  ctx.lineTo(400, 100);
+  ctx.stroke();
+}
+</script>
+<%- include('layout-footer') %>

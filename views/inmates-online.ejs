@@ -1,0 +1,18 @@
+<%- include('layout-header', { title: 'Inmates Online', active: 'inmates' }) %>
+<div class="content-box">
+  <h3>Inmates Online</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;"><%= inmates.length %> inmates currently online</p>
+  <table class="data-table">
+    <thead><tr><th>Prisoner</th><th>Level</th><th>Last Seen</th></tr></thead>
+    <tbody>
+      <% inmates.forEach(i => { %>
+        <tr>
+          <td><a href="/profile/<%= i.tag %>" style="color:#4caf50;"><%= i.tag %></a></td>
+          <td><%= i.lvl %></td>
+          <td><%= i.last_seen ? Math.floor((Date.now() - i.last_seen) / 60000) + ' minutes ago' : 'Unknown' %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+<%- include('layout-footer') %>

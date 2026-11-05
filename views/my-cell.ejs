@@ -1,0 +1,46 @@
+<%- include('layout-header', { title: 'My Cell', active: 'my-cell' }) %>
+<div class="tabs">
+  <button class="tab active">My Cell</button>
+  <button class="tab" onclick="location.href='/cell-raids'">Cell Raids</button>
+</div>
+<div class="content-box">
+  <h3>My Cell</h3>
+  <p style="color:#666;font-size:11px;">Adding items to your cell will better your stay here. You can gain more nerve, stamina, etc. However, you are limited to a certain amount of space. If you run out of space, delete some things or move to a bigger cell.</p>
+  <div class="stats-grid" style="margin:15px 0;">
+    <div class="stat-row"><span class="label">Size:</span><span class="value"><%= user.cell_size %></span></div>
+    <div class="stat-row"><span class="label">Speed:</span><span class="value"><%= cellStats.spd %></span></div>
+    <div class="stat-row"><span class="label">HP:</span><span class="value"><%= cellStats.hp || 0 %></span></div>
+    <div class="stat-row"><span class="label">Energy:</span><span class="value"><%= cellStats.energy %></span></div>
+    <div class="stat-row"><span class="label">Strength:</span><span class="value"><%= cellStats.str %></span></div>
+    <div class="stat-row"><span class="label">Nerve:</span><span class="value"><%= cellStats.nrv %></span></div>
+    <div class="stat-row"><span class="label">Defense:</span><span class="value"><%= cellStats.def %></span></div>
+    <div class="stat-row"><span class="label">Stamina:</span><span class="value"><%= cellStats.stamina %></span></div>
+    <div class="stat-row"><span class="label">Pack Slots:</span><span class="value"><%= user.backpack_slots || 5 %></span></div>
+  </div>
+</div>
+<div class="content-box">
+  <h3>Manage Cell</h3>
+  <div style="display:grid;grid-template-columns:repeat(7,40px);grid-template-rows:repeat(6,40px);gap:2px;background:#1a1a1a;padding:10px;border:1px solid #555;width:fit-content;margin:10px auto;">
+    <% for (let i = 0; i < 42; i++) { %>
+      <div style="width:40px;height:40px;background:#2a2a2a;border:1px solid #444;"></div>
+    <% } %>
+  </div>
+  <p style="color:#888;font-size:10px;text-align:center;">Amenities with <span style="color:#ffd700;">gold</span> outlines are protected and can NOT be raided. Click an item to see a description. Click again and drag to re-arrange the items in your cell. Click the red X to remove amenities from your cell.</p>
+  <div style="text-align:center;margin:10px 0;">
+    <button class="btn btn-small">Load</button>
+    <button class="btn btn-small">Save</button>
+    <button class="btn btn-small">Clear</button>
+  </div>
+</div>
+<div class="content-box">
+  <h3>Cell Amenities</h3>
+  <p style="color:#666;font-size:11px;">Here are all the items you've purchased for your cell but are not currently in your cell. You may sell unused items in the marketplace.</p>
+  <p style="color:#666;font-size:11px;">Amenities purchased direct from the warden and special events are <span style="color:#ffd700;">protected</span> and can't be raided!</p>
+  <div style="display:flex;gap:10px;margin:15px 0;">
+    <button class="btn">Normal Amenities</button>
+    <button class="btn">Protected Amenities</button>
+  </div>
+  <p style="color:#888;font-size:10px;text-align:center;">No Amenities! Visit the Warden or the Marketplace to get some.</p>
+  <p style="color:#888;font-size:10px;text-align:center;margin-top:10px;">To get more amenities for your cell, visit The Warden or The Open Market. To upgrade the size of your cell, click here.</p>
+</div>
+<%- include('layout-footer') %>

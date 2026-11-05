@@ -1,0 +1,22 @@
+<%- include('layout-header', { title: 'Notes', active: 'rap-sheet' }) %>
+<div class="tabs">
+  <button class="tab" onclick="location.href='/rap-sheet'">Rap Sheet</button>
+  <button class="tab" onclick="location.href='/my-account'">My Account</button>
+  <button class="tab" onclick="location.href='/profile'">Profile</button>
+  <button class="tab" onclick="location.href='/referrals'">Referrals</button>
+  <button class="tab" onclick="location.href='/transactions'">Transactions</button>
+  <button class="tab active">Notes</button>
+</div>
+<div class="content-box">
+  <h3>My Notepad</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:10px;">Jot down anything important here</p>
+  <textarea id="notes" style="width:100%;min-height:400px;"><%= user.notes || '' %></textarea>
+  <button class="btn btn-primary" onclick="saveNotes()">Save Notes</button>
+</div>
+<script>
+function saveNotes() {
+  fetch('/notes/save', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ notes: document.getElementById('notes').value }) })
+    .then(r => r.json()).then(d => { alert(d.msg); });
+}
+</script>
+<%- include('layout-footer') %>

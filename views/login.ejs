@@ -1,14 +1,13 @@
-<!DOCTYPE html><html><head><title>Login - Cellblock Kings</title><link rel="stylesheet" href="/css/style.css"></head>
+<!DOCTYPE html><html><head><title>Login</title><link rel="stylesheet" href="/css/style.css"></head>
 <body class="auth-page">
   <div class="auth-box">
     <h1>🔒 CELLBLOCK KINGS</h1>
-    <p style="text-align:center;color:#a0a0a0;font-size:0.9em;margin-bottom:20px;">INMATE TAG · PASSCODE · NO VISITORS</p>
-    <% if (error) { %><p style="color:#ff6b35;text-align:center;"><%= error %></p><% } %>
+    <% if (error) { %><p style="color:#f44336;text-align:center;"><%= error %></p><% } %>
     <form method="POST">
-      <input name="tag" placeholder="Inmate Tag (e.g. Rusty_Nail)" required>
+      <input name="tag" placeholder="Inmate Tag" required>
       <input name="pass" type="password" placeholder="Passcode" required>
-      <button class="btn" style="width:100%;">ENTER THE BLOCK</button>
+      <button class="btn btn-primary" style="width:100%;">ENTER THE BLOCK</button>
     </form>
-    <p style="text-align:center;margin-top:15px;"><a href="/register" style="color:#ff6b35;">New device? Start over</a></p>
+    <p style="text-align:center;margin-top:15px;"><a href="/register" style="color:#4caf50;">New Inmate? Register</a></p>
   </div>
 </body></html>

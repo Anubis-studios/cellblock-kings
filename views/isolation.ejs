@@ -1,0 +1,17 @@
+<%- include('layout-header', { title: 'Isolation Cell', active: 'isolation' }) %>
+<div class="content-box">
+  <h3>Isolation Cell</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;">Here is a list of the prisoners currently in isolation:</p>
+  <% if (isolated.length === 0) { %>
+    <p style="color:#888;text-align:center;">There are no prisoners in isolation.</p>
+  <% } else { %>
+    <% isolated.forEach(p => { %>
+      <div style="background:#2a2a2a;border:1px solid #555;padding:10px;margin-bottom:10px;">
+        <p style="color:#fff;font-weight:bold;"><%= p.tag %> [<%= p.lvl %>]</p>
+        <p style="color:#aaa;font-size:11px;">Released: <%= new Date(p.isolated_until).toLocaleString() %></p>
+      </div>
+    <% }); %>
+  <% } %>
+  <div style="text-align:right;"><button class="btn btn-small" onclick="location.href='/explore-prison'">back to prison hall</button></div>
+</div>
+<%- include('layout-footer') %>

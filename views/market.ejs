@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head><title>Market - Cellblock Kings</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <header><h1>🔒 CELLBLOCK KINGS</h1><span><%= user.tag %> (Lvl <%= user.lvl %>)</span></header>
+  <nav><a href="/home">Home</a> <a href="/gym">Gym</a> <a href="/market">Market</a> <a href="/inventory">Inventory</a> <a href="/logout" style="color:#ff6b35">Logout</a></nav>
+  <main>
+    <h2>🛒 Prison Black Market</h2>
+    <p style="color:#4caf50; margin-bottom:15px;">Your Cash: $<%= user.cash %></p>
+    <div class="items-grid">
+      <% items.forEach(item => { %>
+        <div class="item-card">
+          <h4><%= item.name %></h4>
+          <p style="font-size:0.8em; color:#a0a0a0;"><%= item.type.toUpperCase() %> | Lvl <%= item.level_req %></p>
+          <% if (item.heal > 0) { %><p style="color:#4caf50">+<%= item.heal %> HP</p><% } %>
+          <% if (item.energy > 0) { %><p style="color:#ff6b35">+<%= item.energy %> Energy</p><% } %>
+          <% if (item.stat_mod > 0) { %><p style="color:#2196f3">+<%= item.stat_mod %> <%= item.stat_type.toUpperCase() %></p><% } %>
+          <p style="color:#ffd700; font-weight:bold;">$<%= item.price %></p>
+          <button class="buy-btn" onclick="buy(<%= item.id %>)">Buy</button>
+        </div>
+      <% }) %>
+    </div>
+  </main>
+  <script>
+    function buy(id) {
+      fetch('/buy/'+id, {method:'POST'}).then(r=>r.json()).then(d=>{alert(d.msg); location.reload();});
+    }
+  </script>
+</body>
+</html>

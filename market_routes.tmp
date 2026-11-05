@@ -1,0 +1,52 @@
+// MARKET & INVENTORY SYSTEM
+app.get('/market', auth, (req, res) => {
+  const items = db.prepare('SELECT * FROM items WHERE level_req <= ?').all(req.user.lvl);
+  res.render('market', { user: req.user, items });
+});
+
+app.post('/buy/:id', auth, (req, res) => {
+  const item = db.prepare('SELECT * FROM items WHERE id=?').get(parseInt(req.params.id));
+  if (!item) return res.json({msg:'Item not found'});
+  if (req.user.cash < item.price) return res.json({msg:'Not enough cash!'});
+  const invCount = db.prepare('SELECT COUNT(*) as c FROM inventory WHERE user_id=?').get(req.user.id).c;
+  if (invCount >= 10) return res.json({msg:'Inventory full! (Max 10 slots)'});
+  
+  db.prepare('UPDATE users SET cash=cash-? WHERE id=?').run(item.price, req.user.id);
+  const existing = db.prepare('SELECT * FROM inventory WHERE user_id=? AND item_id=?').get(req.user.id, item.id);
+  if (existing) {
+    db.prepare('UPDATE inventory SET qty=qty+1 WHERE id=?').run(existing.id);
+  } else {
+    db.prepare('INSERT INTO inventory (user_id, item_id, qty, equipped) VALUES (?,?,1,0)').run(req.user.id, item.id);
+  }
+  res.json({msg:`Bought ${item.name}!`});
+});
+
+app.get('/inventory', auth, (req, res) => {
+  const inv = db.prepare('SELECT inv.id as slot_id, inv.qty, inv.equipped, i.* FROM inventory inv JOIN items i ON inv.item_id=i.id WHERE inv.user_id=?').all(req.user.id);
+  res.render('inventory', { user: req.user, inv });
+});
+
+app.post('/use/:id', auth, (req, res) => {
+  const slot = db.prepare('SELECT inv.id as slot_id, inv.qty, i.* FROM inventory inv JOIN items i ON inv.item_id=i.id WHERE inv.id=? AND inv.user_id=?').get(parseInt(req.params.id), req.user.id);
+  if (!slot) return res.json({msg:'Item not found'});
+  if (slot.type !== 'food' && slot.type !== 'drink') return res.json({msg:'Cannot use this item'});
+  
+  let msg = `Used ${slot.name}! `;
+  if (slot.heal > 0) { db.prepare('UPDATE users SET hp=MIN(hp+?, max_hp) WHERE id=?').run(slot.heal, req.user.id); msg += `+${slot.heal} HP. `; }
+  if (slot.energy > 0) { db.prepare('UPDATE users SET en=MIN(en+?, max_en) WHERE id=?').run(slot.energy, req.user.id); msg += `+${slot.energy} Energy.`; }
+  
+  if (slot.qty > 1) db.prepare('UPDATE inventory SET qty=qty-1 WHERE id=?').run(slot.slot_id);
+  else db.prepare('DELETE FROM inventory WHERE id=?').run(slot.slot_id);
+  res.json({msg});
+});
+
+app.post('/equip/:id', auth, (req, res) => {
+  const slot = db.prepare('SELECT inv.id as slot_id, inv.equipped, i.* FROM inventory inv JOIN items i ON inv.item_id=i.id WHERE inv.id=? AND inv.user_id=?').get(parseInt(req.params.id), req.user.id);
+  if (!slot || (slot.type !== 'weapon' && slot.type !== 'armor')) return res.json({msg:'Invalid item'});
+  
+  db.prepare('UPDATE inventory SET equipped=0 WHERE user_id=? AND item_id IN (SELECT id FROM items WHERE type=?)').run(req.user.id, slot.type);
+  const newStatus = slot.equipped ? 0 : 1;
+  db.prepare('UPDATE inventory SET equipped=? WHERE id=?').run(newStatus, slot.slot_id);
+  res.json({msg: newStatus ? `Equipped ${slot.name}!` : `Unequipped ${slot.name}.`});
+});
+

@@ -22,3 +22,10 @@ main { padding: 20px; }
 .crime-btn:active { border-color: #ff6b35; background: #222; }
 nav a { color: #e0e0e0; text-decoration: none; font-weight: bold; margin-right: 15px; }
 nav a:hover { color: #ff6b35; }
+
+.items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
+.item-card { background: #222; border: 1px solid #444; padding: 10px; border-radius: 5px; text-align: center; }
+.item-card.equipped { border-color: #4caf50; background: #1a2a1a; }
+.item-card h4 { color: #fff; margin-bottom: 5px; font-size: 0.9em; }
+.buy-btn, .action-btn { background: #ff6b35; color: #fff; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer; margin-top: 5px; font-size: 0.8em; width: 100%; }
+.action-btn { background: #2196f3; }

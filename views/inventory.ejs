@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head><title>Inventory - Cellblock Kings</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <header><h1>🔒 CELLBLOCK KINGS</h1><span><%= user.tag %> (Lvl <%= user.lvl %>)</span></header>
+  <nav><a href="/home">Home</a> <a href="/gym">Gym</a> <a href="/market">Market</a> <a href="/inventory">Inventory</a> <a href="/logout" style="color:#ff6b35">Logout</a></nav>
+  <main>
+    <h2>🎒 Your Inventory (<%= inv.length %>/10)</h2>
+    <% if (inv.length === 0) { %>
+      <p style="color:#a0a0a0;">Your inventory is empty. Visit the <a href="/market" style="color:#ff6b35">Market</a> to buy items!</p>
+    <% } else { %>
+      <div class="items-grid">
+        <% inv.forEach(item => { %>
+          <div class="item-card <%= item.equipped ? 'equipped' : '' %>">
+            <h4><%= item.name %> <%= item.equipped ? '✅' : '' %></h4>
+            <p style="font-size:0.8em; color:#a0a0a0;">Qty: <%= item.qty %> | <%= item.type.toUpperCase() %></p>
+            <% if (item.heal > 0 || item.energy > 0) { %>
+              <button class="action-btn" onclick="use(<%= item.slot_id %>)">Use</button>
+            <% } %>
+            <% if (item.type === 'weapon' || item.type === 'armor') { %>
+              <button class="action-btn" onclick="equip(<%= item.slot_id %>)"><%= item.equipped ? 'Unequip' : 'Equip' %></button>
+            <% } %>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
+  <script>
+    function use(id) { fetch('/use/'+id, {method:'POST'}).then(r=>r.json()).then(d=>{alert(d.msg); location.reload();}); }
+    function equip(id) { fetch('/equip/'+id, {method:'POST'}).then(r=>r.json()).then(d=>{alert(d.msg); location.reload();}); }
+  </script>
+</body>
+</html>

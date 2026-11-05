@@ -39,6 +39,8 @@ class DB {
       );
       CREATE TABLE IF NOT EXISTS crimes (id INTEGER PRIMARY KEY, name TEXT, cost INT, reward_min INT, reward_max INT, exp_min INT, exp_max INT);
       CREATE TABLE IF NOT EXISTS training (user_id INT PRIMARY KEY, str_train INT DEFAULT 0, def_train INT DEFAULT 0, spd_train INT DEFAULT 0);
+      CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY, name TEXT, type TEXT, price INT, stat_mod INT, stat_type TEXT, heal INT, energy INT, level_req INT);
+      CREATE TABLE IF NOT EXISTS inventory (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INT, item_id INT, qty INT, equipped INT DEFAULT 0);
       CREATE TABLE IF NOT EXISTS cells (user_id INT PRIMARY KEY, combo TEXT);
     `);
   }
@@ -50,6 +52,16 @@ class DB {
     this.db.run("INSERT INTO crimes VALUES (2,'Steal Food',2,30,100,15,25)");
     this.db.run("INSERT INTO crimes VALUES (3,'Extort Newbie',3,100,250,20,35)");
     this.db.run("INSERT INTO crimes VALUES (4,'Smuggle Contraband',5,200,500,30,50)");
+    const insertItem = this.db.prepare('INSERT OR IGNORE INTO items VALUES (?,?,?,?,?,?,?,?,?)');
+    insertItem.run(1,'Burger','food',20,0,'',50,0,1);
+    insertItem.run(2,'Energy Drink','drink',50,0,'',0,5,1);
+    insertItem.run(3,'Rusty Shank','weapon',150,5,'str',0,0,1);
+    insertItem.run(4,'Baseball Bat','weapon',400,12,'str',0,0,3);
+    insertItem.run(5,'Leather Jacket','armor',300,8,'def',0,0,2);
+    insertItem.run(6,'Kevlar Vest','armor',800,20,'def',0,0,5);
+    insertItem.run(7,'Bandages','food',15,0,'',25,0,1);
+    insertItem.run(8,'Coffee','drink',30,0,'',0,3,1);
+  
   }
 
   save() {

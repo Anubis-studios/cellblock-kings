@@ -416,4 +416,49 @@ app.get('/profile/:tag', auth, async (req, res) => {
 // MISSIONS
 app.get('/missions', auth, (req, res) => res.render('missions', { user: req.user }));
 
+
+// CHARACTER CUSTOMIZER
+app.get('/character-customizer', auth, (req, res) => {
+  res.render('character-customizer', { user: req.user, config: req.user.character_config || {} });
+});
+
+app.post('/api/character/save', auth, async (req, res) => {
+  const { config } = req.body;
+  if (!config) return res.status(400).json({ msg: 'Invalid config' });
+  
+  await db.collection('users').updateOne(
+    { _id: req.user._id },
+    { $set: { character_config: config } }
+  );
+  res.json({ msg: 'Character saved successfully!' });
+});
+
+app.post('/api/character/save-preset', auth, async (req, res) => {
+  const { slot, config, name } = req.body;
+  if (slot < 0 || slot > 3) return res.status(400).json({ msg: 'Invalid slot' });
+  
+  const presets = req.user.saved_presets || [null, null, null, null];
+  presets[slot] = { name: name || `Preset ${slot + 1}`, config, updatedAt: Date.now() };
+  
+  await db.collection('users').updateOne(
+    { _id: req.user._id },
+    { $set: { saved_presets: presets } }
+  );
+  res.json({ msg: `Preset ${slot + 1} saved!` });
+});
+
+app.post('/api/character/load-preset', auth, async (req, res) => {
+  const { slot } = req.body;
+  const presets = req.user.saved_presets || [null, null, null, null];
+  const preset = presets[slot];
+  
+  if (!preset) return res.status(404).json({ msg: 'No preset in this slot' });
+  
+  await db.collection('users').updateOne(
+    { _id: req.user._id },
+    { $set: { character_config: preset.config } }
+  );
+  res.json({ msg: 'Preset loaded!', config: preset.config });
+});
+
 startServer().catch(console.error);

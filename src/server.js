@@ -408,7 +408,7 @@ app.post('/notes/save', auth, async (req, res) => {
 
 // Admin check middleware
 const isAdmin = (req, res, next) => {
-  if (req.user && req.user.tag === 'Anubis' && req.user.email === 'shdwnbs@gmail.com') {
+  if (req.user && req.user.is_admin === true) {
     req.isAdmin = true;
     return next();
   }

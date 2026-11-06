@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Surgeon - Character Customization</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .surgeon-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+      min-height: 100vh;
+    }
+    
+    .surgeon-header {
+      background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+      border: 3px solid #444;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .surgeon-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #ff6b35;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+    }
+    
+    .surgeon-main {
+      display: grid;
+      grid-template-columns: 400px 1fr 300px;
+      gap: 20px;
+    }
+    
+    .preview-panel {
+      background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+      border: 3px solid #444;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    
+    .character-canvas {
+      width: 100%;
+      height: 500px;
+      background: #0a0a0a;
+      border: 2px solid #333;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #surgeonCanvas {
+      background: transparent;
+    }
+    
+    .presets-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .preset-slot {
+      width: 60px;
+      height: 60px;
+      background: #1a1a1a;
+      border: 2px solid #444;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      transition: all 0.2s;
+    }
+    
+    .preset-slot:hover {
+      border-color: #ff6b35;
+      transform: scale(1.05);
+    }
+    
+    .preset-slot.active {
+      border-color: #4caf50;
+      background: #1a2f1a;
+    }
+    
+    .controls-panel {
+      background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+      border: 3px solid #444;
+      border-radius: 10px;
+      padding: 20px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .category-btn {
+      background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
+      border: 2px solid #555;
+      color: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+    
+    .category-btn:hover {
+      border-color: #ff6b35;
+      transform: translateY(-2px);
+    }
+    
+    .category-btn.active {
+      border-color: #4caf50;
+      background: linear-gradient(180deg, #2e7d32 0%, #1b5e20 100%);
+    }
+    
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .item-slot {
+      aspect-ratio: 1;
+      background: #1a1a1a;
+      border: 2px solid #444;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      transition: all 0.2s;
+      position: relative;
+    }
+    
+    .item-slot:hover {
+      border-color: #ff6b35;
+    }
+    
+    .item-slot.selected {
+      border-color: #4caf50;
+      box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    }
+    
+    .item-slot.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    
+    .color-picker {
+      display: flex;
+      gap: 5px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    
+    .color-swatch {
+      width: 30px;
+      height: 30px;
+      border: 2px solid #444;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    .color-swatch.active {
+      border-color: #fff;
+      box-shadow: 0 0 5px rgba(255,255,255,0.5);
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .action-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    
+    .btn-reset { background: #f44336; color: #fff; }
+    .btn-random { background: #ff9800; color: #fff; }
+    .btn-save { background: #4caf50; color: #fff; }
+    
+    .packages-panel {
+      background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+      border: 3px solid #444;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    
+    .package-item {
+      background: #1a1a1a;
+      border: 2px solid #444;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 10px;
+    }
+    
+    .package-item.owned {
+      border-color: #4caf50;
+    }
+    
+    .package-name {
+      color: #ff6b35;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    .package-desc {
+      color: #888;
+      font-size: 11px;
+      margin: 5px 0;
+    }
+    
+    .package-cost {
+      color: #4caf50;
+      font-weight: bold;
+    }
+    
+    .page-indicator {
+      text-align: center;
+      color: #888;
+      margin: 10px 0;
+      font-size: 12px;
+    }
+    
+    .page-nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    
+    .page-btn {
+      background: #333;
+      border: 2px solid #555;
+      color: #fff;
+      padding: 5px 15px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    .page-btn:hover {
+      border-color: #ff6b35;
+    }
+    
+    .layer-count {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: #ff6b35;
+      color: #fff;
+      font-size: 9px;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="surgeon-container">
+    <div class="surgeon-header">
+      <div class="surgeon-title">🔪 The Surgeon</div>
+      <div style="color: #888;">Customize Your Inmate</div>
+    </div>
+    
+    <div class="surgeon-main">
+      <!-- Preview Panel -->
+      <div class="preview-panel">
+        <div class="presets-bar">
+          <% for (let i = 0; i < 4; i++) { %>
+            <div class="preset-slot <%= character.presets && character.presets[i] ? 'active' : '' %>" 
+                 onclick="loadPreset(<%= i %>)" 
+                 id="preset-<%= i %>">
+              <%= character.presets && character.presets[i] ? '👤' : '○' %>
+            </div>
+          <% } %>
+        </div>
+        
+        <div class="character-canvas">
+          <canvas id="surgeonCanvas" width="350" height="450"></canvas>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="action-btn btn-reset" onclick="resetCharacter()">Reset</button>
+          <button class="action-btn btn-random" onclick="randomizeCharacter()">Random</button>
+          <button class="action-btn btn-save" onclick="saveCharacter()">Save</button>
+        </div>
+      </div>
+      
+      <!-- Controls Panel -->
+      <div class="controls-panel">
+        <h3 style="color: #fff; margin-bottom: 15px;">Customization Categories</h3>
+        
+        <div class="category-grid">
+          <button class="category-btn active" onclick="selectCategory('heads')">Heads</button>
+          <button class="category-btn" onclick="selectCategory('tattoos')">Tattoos</button>
+          <button class="category-btn" onclick="selectCategory('features')">Features</button>
+          <button class="category-btn" onclick="selectCategory('mouth')">Mouth</button>
+          <button class="category-btn" onclick="selectCategory('eyes')">Eyes</button>
+          <button class="category-btn" onclick="selectCategory('eyebrows')">Eyebrows</button>
+          <button class="category-btn" onclick="selectCategory('eyewear')">Eyewear</button>
+          <button class="category-btn" onclick="selectCategory('extras')">Extras</button>
+          <button class="category-btn" onclick="selectCategory('appendages')">Appendages</button>
+          <button class="category-btn" onclick="selectCategory('hair')">Hair</button>
+          <button class="category-btn" onclick="selectCategory('hats')">Hats</button>
+        </div>
+        
+        <div id="itemsContainer">
+          <div class="page-indicator">Page <span id="currentPage">1</span>/<span id="totalPages">5</span></div>
+          <div class="page-nav">
+            <button class="page-btn" onclick="changePage(-1)"> Prev</button>
+            <button class="page-btn" onclick="changePage(1)">Next ▶</button>
+          </div>
+          <div class="items-grid" id="itemsGrid"></div>
+        </div>
+        
+        <div id="colorPicker" style="display: none; margin-top: 20px;">
+          <h4 style="color: #fff; margin-bottom: 10px;">Select Color</h4>
+          <div class="color-picker" id="colorSwatches"></div>
+          <input type="color" id="customColor" onchange="applyCustomColor(this.value)" 
+                 style="width: 100%; margin-top: 10px;">
+        </div>
+      </div>
+      
+      <!-- Packages Panel -->
+      <div class="packages-panel">
+        <h3 style="color: #fff; margin-bottom: 15px;">Surgeon Packages</h3>
+        <div id="packagesList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Character state
+    let character = <%- JSON.stringify(character || {}) %>;
+    let currentCategory = 'heads';
+    let currentPage = 1;
+    let totalPages = 5;
+    let selectedItem = null;
+    let selectedColor = '#000000';
+    
+    const colors = [
+      '#000000', '#8b0000', '#ff0000', '#ff6600', '#ffcc00',
+      '#00ff00', '#0066ff', '#6600ff', '#ff00ff', '#ffffff',
+      '#8b4513', '#daa520', '#4b0082', '#008b8b', '#ff1493'
+    ];
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPackages();
+      loadItems();
+      renderCharacter();
+    });
+
+    async function loadPackages() {
+      const res = await fetch('/api/surgeon/packages');
+      const packages = await res.json();
+      const container = document.getElementById('packagesList');
+      
+      container.innerHTML = packages.map(pkg => \`
+        <div class="package-item \${pkg.owned ? 'owned' : ''}">
+          <div class="package-name">\${pkg.name}</div>
+          <div class="package-desc">\${pkg.description}</div>
+          \${pkg.owned ? 
+            '<div style="color:#4caf50;font-size:11px;">✓ Owned</div>' : 
+            \`<div class="package-cost">\$\${pkg.cost} <button onclick="buyPackage('\${pkg.id}')" class="btn" style="padding:3px 8px;font-size:10px;">Buy</button></div>\`
+          }
+        </div>
+      \`).join('');
+    }
+
+    async function loadItems() {
+      const res = await fetch(\`/api/surgeon/items/\${currentCategory}\`);
+      const items = await res.json();
+      
+      const perPage = 9;
+      const start = (currentPage - 1) * perPage;
+      const end = start + perPage;
+      const pageItems = items.slice(start, end);
+      totalPages = Math.ceil(items.length / perPage);
+      
+      document.getElementById('currentPage').textContent = currentPage;
+      document.getElementById('totalPages').textContent = totalPages;
+      
+      const grid = document.getElementById('itemsGrid');
+      grid.innerHTML = pageItems.map(item => {
+        const isSelected = character.layers && 
+          character.layers[currentCategory] && 
+          character.layers[currentCategory].find(i => i.id === item.id);
+        
+        const count = isSelected ? character.layers[currentCategory].filter(i => i.id === item.id).length : 0;
+        
+        return \`
+          <div class="item-slot \${isSelected ? 'selected' : ''}" 
+               onclick="selectItem('\${item.id}', \${item.maxSlots || 1})">
+            \${getCategoryIcon(currentCategory)}
+            \${count > 0 ? \`<span class="layer-count">\${count}/\${item.maxSlots || 1}</span>\` : ''}
+          </div>
+        \`;
+      }).join('');
+    }
+
+    function getCategoryIcon(cat) {
+      const icons = {
+        heads: '👤', tattoos: '', features: '✨', mouth: '👄',
+        eyes: '️', eyebrows: '〰️', eyewear: '👓', extras: '🎁',
+        appendages: '💪', hair: '💇', hats: '🎩'
+      };
+      return icons[cat] || '';
+    }
+
+    function selectCategory(cat) {
+      currentCategory = cat;
+      currentPage = 1;
+      selectedItem = null;
+      
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.toLowerCase().includes(cat.slice(0, -1))) {
+          btn.classList.add('active');
+        }
+      });
+      
+      loadItems();
+    }
+
+    function changePage(delta) {
+      currentPage += delta;
+      if (currentPage < 1) currentPage = 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+      loadItems();
+    }
+
+    function selectItem(itemId, maxSlots) {
+      if (!character.layers) character.layers = {};
+      if (!character.layers[currentCategory]) character.layers[currentCategory] = [];
+      
+      const existing = character.layers[currentCategory].filter(i => i.id === itemId);
+      
+      if (existing.length >= maxSlots) {
+        // Remove one if at max
+        character.layers[currentCategory] = character.layers[currentCategory]
+          .filter(i => i.id !== itemId || character.layers[currentCategory].filter(x => x.id === itemId).indexOf(x) !== 0);
+      } else {
+        // Add new
+        character.layers[currentCategory].push({
+          id: itemId,
+          color: selectedColor
+        });
+      }
+      
+      selectedItem = itemId;
+      loadItems();
+      renderCharacter();
+      
+      // Show color picker if item is colorable
+      const item = { colorable: true }; // Would fetch from DB
+      if (item.colorable) {
+        showColorPicker();
+      }
+    }
+
+    function showColorPicker() {
+      const picker = document.getElementById('colorPicker');
+      const swatches = document.getElementById('colorSwatches');
+      
+      picker.style.display = 'block';
+      swatches.innerHTML = colors.map(color => \`
+        <div class="color-swatch \${color === selectedColor ? 'active' : ''}" 
+             style="background: \${color}"
+             onclick="selectColor('\${color}')"></div>
+      \`).join('');
+    }
+
+    function selectColor(color) {
+      selectedColor = color;
+      document.getElementById('customColor').value = color;
+      showColorPicker();
+    }
+
+    function applyCustomColor(color) {
+      selectedColor = color;
+      showColorPicker();
+    }
+
+    function renderCharacter() {
+      const canvas = document.getElementById('surgeonCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw base head
+      ctx.fillStyle = character.baseHead === 'zombie' ? '#90ee90' : '#d2a679';
+      ctx.beginPath();
+      ctx.ellipse(175, 200, 100, 130, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Draw neck
+      ctx.fillStyle = character.baseHead === 'zombie' ? '#90ee90' : '#d2a679';
+      ctx.fillRect(140, 320, 70, 80);
+      
+      // Draw layers
+      if (character.layers) {
+        Object.values(character.layers).flat().forEach(layer => {
+          drawLayer(ctx, layer);
+        });
+      }
+    }
+
+    function drawLayer(ctx, layer) {
+      // Simplified drawing - would use actual sprites in production
+      ctx.fillStyle = layer.color || '#000000';
+      
+      if (layer.id.includes('tattoo')) {
+        ctx.font = '40px Arial';
+        ctx.fillText('🎨', 150, 220);
+      } else if (layer.id.includes('scar')) {
+        ctx.strokeStyle = '#8b0000';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(140, 180);
+        ctx.lineTo(170, 200);
+        ctx.stroke();
+      } else if (layer.id.includes('glasses')) {
+        ctx.fillRect(130, 190, 40, 20);
+        ctx.fillRect(180, 190, 40, 20);
+        ctx.fillRect(170, 195, 10, 5);
+      } else if (layer.id.includes('hat')) {
+        ctx.fillRect(120, 100, 110, 40);
+        ctx.fillRect(140, 70, 70, 30);
+      }
+    }
+
+    function resetCharacter() {
+      if (confirm('Reset all customizations?')) {
+        character = {
+          baseHead: 'default',
+          layers: {},
+          colors: {}
+        };
+        renderCharacter();
+        loadItems();
+      }
+    }
+
+    function randomizeCharacter() {
+      character.layers = {};
+      const categories = ['tattoos', 'features', 'eyewear', 'hair', 'hats'];
+      
+      categories.forEach(cat => {
+        if (Math.random() > 0.5) {
+          character.layers[cat] = [{
+            id: \`\${cat}_\${Math.floor(Math.random() * 10) + 1}\`,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          }];
+        }
+      });
+      
+      renderCharacter();
+      loadItems();
+    }
+
+    async function saveCharacter() {
+      const slot = prompt('Save to preset slot (0-3):', '0');
+      const name = prompt('Preset name:', \`Preset \${parseInt(slot) + 1}\`);
+      
+      if (slot !== null && name !== null) {
+        await fetch('/api/surgeon/save-preset', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            slot: parseInt(slot),
+            preset: character,
+            name: name
+          })
+        });
+        alert('Preset saved!');
+        location.reload();
+      }
+    }
+
+    async function loadPreset(slot) {
+      const res = await fetch('/api/surgeon/load-preset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slot })
+      });
+      
+      const data = await res.json();
+      if (data.character) {
+        character = data.character;
+        renderCharacter();
+        loadItems();
+        alert('Preset loaded!');
+      } else {
+        alert(data.msg);
+      }
+    }
+
+    async function buyPackage(packageId) {
+      const res = await fetch('/api/surgeon/buy-package', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ packageId })
+      });
+      
+      const data = await res.json();
+      alert(data.msg);
+      if (res.ok) loadPackages();
+    }
+
+    // Auto-save on changes
+    let saveTimeout;
+    function debouncedSave() {
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(async () => {
+        await fetch('/api/surgeon/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ character })
+        });
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

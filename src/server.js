@@ -461,4 +461,101 @@ app.post('/api/character/load-preset', auth, async (req, res) => {
   res.json({ msg: 'Preset loaded!', config: preset.config });
 });
 
+
+// SURGEON CHARACTER CUSTOMIZATION
+app.get('/surgeon', auth, async (req, res) => {
+  const packages = await db.collection('surgeon_packages').find({}).toArray();
+  const items = await db.collection('surgeon_items').find({}).toArray();
+  const userPackages = req.user.character?.unlockedPackages || ['default'];
+  
+  // Filter items based on unlocked packages
+  const availableItems = items.filter(item => {
+    const pkg = packages.find(p => p.items && 
+      Object.values(p.items).flat().includes(item.id));
+    return !pkg || userPackages.includes(pkg.id);
+  });
+
+  res.render('surgeon', { 
+    user: req.user, 
+    packages, 
+    availableItems,
+    character: req.user.character || {}
+  });
+});
+
+app.get('/api/surgeon/items/:category', auth, async (req, res) => {
+  const { category } = req.params;
+  const items = await db.collection('surgeon_items')
+    .find({ category }).toArray();
+  res.json(items);
+});
+
+app.post('/api/surgeon/save', auth, async (req, res) => {
+  const { character } = req.body;
+  if (!character) return res.status(400).json({ msg: 'Invalid data' });
+  
+  await db.collection('users').updateOne(
+    { _id: req.user._id },
+    { $set: { character } }
+  );
+  res.json({ msg: 'Character saved!' });
+});
+
+app.post('/api/surgeon/save-preset', auth, async (req, res) => {
+  const { slot, preset } = req.body;
+  if (slot < 0 || slot > 3) return res.status(400).json({ msg: 'Invalid slot' });
+  
+  const presets = req.user.character?.presets || [null, null, null, null];
+  presets[slot] = { ...preset, savedAt: Date.now() };
+  
+  await db.collection('users').updateOne(
+    { _id: req.user._id },
+    { $set: { 'character.presets': presets } }
+  );
+  res.json({ msg: `Preset ${slot + 1} saved!` });
+});
+
+app.post('/api/surgeon/load-preset', auth, async (req, res) => {
+  const { slot } = req.body;
+  const presets = req.user.character?.presets || [null, null, null, null];
+  const preset = presets[slot];
+  
+  if (!preset) return res.status(404).json({ msg: 'Empty slot' });
+  
+  await db.collection('users').updateOne(
+    { _id: req.user._id },
+    { $set: { character: { ...req.user.character, ...preset } } }
+  );
+  res.json({ msg: 'Preset loaded!', character: preset });
+});
+
+app.post('/api/surgeon/buy-package', auth, async (req, res) => {
+  const { packageId } = req.body;
+  const pkg = await db.collection('surgeon_packages').findOne({ id: packageId });
+  
+  if (!pkg) return res.status(404).json({ msg: 'Package not found' });
+  if (req.user.cash < pkg.cost) return res.status(400).json({ msg: 'Not enough cash' });
+  
+  const unlocked = req.user.character?.unlockedPackages || ['default'];
+  if (unlocked.includes(packageId)) {
+    return res.status(400).json({ msg: 'Already owned' });
+  }
+  
+  await db.collection('users').updateOne(
+    { _id: req.user._id },
+    { 
+      $inc: { cash: -pkg.cost },
+      $push: { 'character.unlockedPackages': packageId }
+    }
+  );
+  
+  res.json({ msg: `Purchased ${pkg.name}!` });
+});
+
+app.get('/api/surgeon/packages', auth, async (req, res) => {
+  const packages = await db.collection('surgeon_packages').find({}).toArray();
+  const unlocked = req.user.character?.unlockedPackages || ['default'];
+  res.json(packages.map(p => ({ ...p, owned: unlocked.includes(p.id) })));
+});
+
 startServer().catch(console.error);

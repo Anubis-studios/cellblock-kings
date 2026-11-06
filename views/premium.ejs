@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Premium Store - Cellblock Kings</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .premium-container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+    .premium-header { text-align: center; margin-bottom: 40px; }
+    .premium-header h1 { color: #ffd700; font-size: 36px; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; }
+    .premium-header p { color: #888; font-size: 14px; }
+    .premium-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .premium-card { background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%); border: 2px solid #444; border-radius: 10px; padding: 25px; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
+    .premium-card:hover { border-color: #ffd700; transform: translateY(-5px); box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2); }
+    .premium-card.featured { border-color: #ff6b35; }
+    .premium-card.featured::before { content: 'BEST VALUE'; position: absolute; top: 15px; right: -30px; background: #ff6b35; color: #fff; padding: 5px 30px; transform: rotate(45deg); font-size: 10px; font-weight: bold; }
+    .premium-icon { font-size: 48px; margin-bottom: 15px; }
+    .premium-title { color: #fff; font-size: 20px; font-weight: bold; margin-bottom: 10px; }
+    .premium-desc { color: #aaa; font-size: 12px; margin-bottom: 20px; min-height: 40px; }
+    .premium-price { color: #ffd700; font-size: 28px; font-weight: bold; margin-bottom: 20px; }
+    .premium-price span { font-size: 14px; color: #888; }
+    .buy-btn { background: linear-gradient(180deg, #4caf50 0%, #388e3c 100%); color: #fff; border: none; padding: 12px 30px; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.2s; }
+    .buy-btn:hover { background: linear-gradient(180deg, #66bb6a 0%, #43a047 100%); }
+    .stripe-badge { text-align: center; margin-top: 40px; color: #666; font-size: 12px; }
+    .stripe-badge img { height: 24px; vertical-align: middle; margin-left: 10px; }
+  </style>
+</head>
+<body>
+  <div class="premium-container">
+    <div class="premium-header">
+      <h1>👑 The Warden's Vault</h1>
+      <p>Premium upgrades to dominate the block. Secure checkout via Stripe.</p>
+    </div>
+    
+    <div class="premium-grid">
+      <% items.forEach(item => { %>
+        <div class="premium-card <%= item.id === 'respected_30' ? 'featured' : '' %>">
+          <div class="premium-icon">
+            <%= item.type === 'favors' ? '🎟️' : (item.type === 'vip_days' ? '👑' : '📦') %>
+          </div>
+          <div class="premium-title"><%= item.name %></div>
+          <div class="premium-desc">
+            <%= item.type === 'favors' ? 'Instantly add Favors to your account to buy Surgeon Packs.' : 
+                (item.type === 'vip_days' ? 'Get RESPECTED status. 50% off transport, double bank cap, market discounts.' : 
+                'Unlock exclusive Surgeon customization items.') %>
+          </div>
+          <div class="premium-price">$<%= (item.price / 100).toFixed(2) %></div>
+          <button class="buy-btn" onclick="checkout('<%= item.id %>')">Purchase Now</button>
+        </div>
+      <% }); %>
+    </div>
+    
+    <div class="stripe-badge">
+      🔒 Secure payments powered by Stripe
+    </div>
+  </div>
+
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>
+    const stripe = Stripe('pk_test_YOUR_PUBLISHABLE_KEY_HERE'); // Replace with your Publishable Key if needed, or use backend redirect
+    
+    function checkout(itemId) {
+      fetch('/api/stripe/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemId })
+      })
+      .then(response => response.json())
+      .then(session => {
+        if (session.url) {
+          window.location.href = session.url;
+        } else {
+          alert('Error: ' + session.msg);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Checkout failed. Please try again.');
+      });
+    }
+  </script>
+</body>
+</html>

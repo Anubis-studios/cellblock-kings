@@ -1,0 +1,63 @@
+<%- include('layout-header', { title: 'Inmates Online', active: 'npcs' }) %>
+<div class="content-box">
+  <h3>Prison Inmates - <%= user.prison.toUpperCase().replace('_', ' ') %></h3>
+  <p style="color:#666;font-size:11px;margin-bottom:5px;">These inmates roam your prison. Attack them to earn cash and EXP. They fight back!</p>
+  <p style="color:#888;font-size:10px;margin-bottom:15px;">Your loadout: <strong style="color:#4caf50;"><%= user.equipped_weapon || 'fists' %></strong> weapon, <strong style="color:#2196f3;"><%= user.equipped_gear || 'none' %></strong> gear</p>
+  
+  <table class="data-table">
+    <thead>
+      <tr><th>INMATE</th><th>LVL</th><th>STR/DEF/SPD</th><th>WEAPON</th><th>GEAR</th><th>CASH</th><th>ACTION</th></tr>
+    </thead>
+    <tbody>
+      <% npcs.forEach(n => { 
+        const npcWeapon = weapons.find(w => w.id === n.weapon);
+        const npcGear = weapons.find(w => w.id === n.gear);
+        const killCount = user.npc_kills?.[n.tag] || 0;
+      %>
+        <tr>
+          <td>
+            <strong><%= n.tag %></strong>
+            <% if (killCount > 0) { %><span style="color:#f44336;font-size:10px;"> (Killed <%= killCount %>x)</span><% } %>
+            <br><small style="color:#888;"><%= n.desc %></small>
+          </td>
+          <td><%= n.lvl %></td>
+          <td><%= n.str %> / <%= n.def %> / <%= n.spd %></td>
+          <td><%= npcWeapon ? npcWeapon.name : 'Fists' %></td>
+          <td><%= npcGear ? npcGear.name : 'None' %></td>
+          <td style="color:#4caf50;">$<%= n.cash.toLocaleString() %></td>
+          <td>
+            <button class="btn btn-small btn-danger" onclick="attack('<%= n._id %>', '<%= n.tag %>')">⚔️ ATTACK</button>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<div class="content-box">
+  <h3>Combat Guide</h3>
+  <div style="color:#666;font-size:11px;line-height:1.6;">
+    <p><strong style="color:#fff;">⚔️ How Combat Works:</strong></p>
+    <ul style="margin-left:20px;">
+      <li>Costs <strong>10 Energy</strong> per attack</li>
+      <li>Win chance based on: (Your STR×1.5 + SPD×1.2 + DEF×0.8) vs NPC stats</li>
+      <li>Your <strong>equipped weapon</strong> adds STR/SPD bonuses</li>
+      <li>Your <strong>equipped gear</strong> adds DEF/SPD bonuses</li>
+      <li>Victory: Steal 50-100% of NPC's cash + EXP based on their level</li>
+      <li>Defeat: Lose 20-50 HP + sent to Med Bay for 15 minutes</li>
+    </ul>
+    <p style="margin-top:10px;"><strong style="color:#ff6b35;">💡 Pro Tip:</strong> A Phone Book gives +8 DEF but -2 SPD. Sometimes defense beats speed!</p>
+  </div>
+</div>
+
+<script>
+function attack(npcId, npcTag) {
+  if (!confirm('Attack ' + npcTag + '? Costs 10 Energy. They WILL fight back!')) return;
+  fetch('/combat/attack/' + npcId, { method: 'POST' })
+    .then(r => r.json()).then(d => { 
+      alert(d.msg + '\\n\\n' + d.details); 
+      location.reload(); 
+    });
+}
+</script>
+<%- include('layout-footer') %>

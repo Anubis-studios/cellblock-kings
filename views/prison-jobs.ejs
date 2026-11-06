@@ -1,0 +1,38 @@
+<%- include('layout-header', { title: 'Jobs Board', active: 'jobs' }) %>
+<div class="content-box">
+  <h3>Jobs Board - <%= user.prison.toUpperCase().replace('_', ' ') %></h3>
+  <p style="color:#666;font-size:11px;margin-bottom:15px;">Stat-gated · pay lands in your account once per day · unique to each prison</p>
+  
+  <% if (jobs.length === 0) { %>
+    <p style="color:#888;">No jobs available in your current prison.</p>
+  <% } else { %>
+    <% jobs.forEach(j => { 
+      const meetsReq = user[j.reqStat] >= j.reqVal;
+      const hasEnergy = user.en >= j.energy;
+      const canClaim = meetsReq && hasEnergy;
+    %>
+      <div class="content-box" style="background:#1a1a1a;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <h4 style="color:#fff;margin:0;"><%= j.name %></h4>
+            <p style="color:#aaa;font-size:11px;margin:5px 0;"><%= j.desc %></p>
+            <p style="color:#888;font-size:10px;">Requires <%= j.reqVal %> <%= j.reqStat.toUpperCase() %> (you have <%= user[j.reqStat] %>) · <%= j.energy %> Energy · $<%= j.pay %> / day</p>
+          </div>
+          <button class="btn <%= canClaim ? 'btn-primary' : '' %>" 
+                  <%= !canClaim ? 'disabled' : '' %>
+                  onclick="claimJob('<%= j._id %>')">
+            <%= !meetsReq ? 'STATS TOO LOW' : (!hasEnergy ? 'NO ENERGY' : 'CLAIM THE JOB') %>
+          </button>
+        </div>
+      </div>
+    <% }); %>
+  <% } %>
+</div>
+
+<script>
+function claimJob(id) {
+  fetch('/prison-jobs/claim/' + id, { method: 'POST' })
+    .then(r => r.json()).then(d => { alert(d.msg); location.reload(); });
+}
+</script>
+<%- include('layout-footer') %>

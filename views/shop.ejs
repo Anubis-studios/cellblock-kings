@@ -1,0 +1,80 @@
+<%- include('layout-header', { title: 'Shop', active: 'shop' }) %>
+<div class="content-box">
+  <h3>Black Market Shop</h3>
+  <p style="color:#666;font-size:11px;margin-bottom:5px;">Buy weapons and gear to boost your combat stats.</p>
+  <p style="color:#888;font-size:10px;margin-bottom:15px;">Currently equipped: <strong style="color:#4caf50;"><%= user.equipped_weapon || 'fists' %></strong> / <strong style="color:#2196f3;"><%= user.equipped_gear || 'none' %></strong></p>
+  
+  <h4 style="color:#ff6b35;margin:20px 0 10px;">⚔️ WEAPONS (Add STR/SPD)</h4>
+  <table class="data-table">
+    <thead><tr><th>ITEM</th><th>STR</th><th>DEF</th><th>SPD</th><th>PRICE</th><th>STATUS</th><th>ACTION</th></tr></thead>
+    <tbody>
+      <% weapons.filter(w => !['phone_book','leather_jacket','kevlar'].includes(w.id)).forEach(w => { 
+        const owned = (user.inventory_weapons || []).includes(w.id);
+        const equipped = user.equipped_weapon === w.id;
+      %>
+        <tr>
+          <td><strong><%= w.name %></strong><br><small style="color:#888;"><%= w.desc %></small></td>
+          <td style="color:<%= w.strBonus > 0 ? '#4caf50' : '#888' %>"><%= w.strBonus > 0 ? '+' : '' %><%= w.strBonus %></td>
+          <td style="color:<%= w.defBonus > 0 ? '#2196f3' : '#888' %>"><%= w.defBonus > 0 ? '+' : '' %><%= w.defBonus %></td>
+          <td style="color:<%= w.spdBonus > 0 ? '#ff9800' : '#888' %>"><%= w.spdBonus > 0 ? '+' : '' %><%= w.spdBonus %></td>
+          <td style="color:#ffd700;">$<%= w.price.toLocaleString() %></td>
+          <td>
+            <% if (equipped) { %><span style="color:#4caf50;">✓ EQUIPPED</span>
+            <% } else if (owned) { %><span style="color:#2196f3;">OWNED</span>
+            <% } else { %><span style="color:#888;">Not owned</span><% } %>
+          </td>
+          <td>
+            <% if (!owned) { %>
+              <button class="btn btn-small btn-primary" onclick="buy('<%= w.id %>')">BUY</button>
+            <% } else if (!equipped) { %>
+              <button class="btn btn-small" onclick="equip('<%= w.id %>')">EQUIP</button>
+            <% } %>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  
+  <h4 style="color:#2196f3;margin:20px 0 10px;">🛡️ GEAR (Add DEF/SPD)</h4>
+  <table class="data-table">
+    <thead><tr><th>ITEM</th><th>STR</th><th>DEF</th><th>SPD</th><th>PRICE</th><th>STATUS</th><th>ACTION</th></tr></thead>
+    <tbody>
+      <% weapons.filter(w => ['phone_book','leather_jacket','kevlar'].includes(w.id)).forEach(w => { 
+        const owned = (user.inventory_gear || []).includes(w.id);
+        const equipped = user.equipped_gear === w.id;
+      %>
+        <tr>
+          <td><strong><%= w.name %></strong><br><small style="color:#888;"><%= w.desc %></small></td>
+          <td style="color:<%= w.strBonus > 0 ? '#4caf50' : '#888' %>"><%= w.strBonus > 0 ? '+' : '' %><%= w.strBonus %></td>
+          <td style="color:<%= w.defBonus > 0 ? '#2196f3' : '#888' %>"><%= w.defBonus > 0 ? '+' : '' %><%= w.defBonus %></td>
+          <td style="color:<%= w.spdBonus > 0 ? '#ff9800' : '#888' %>"><%= w.spdBonus > 0 ? '+' : '' %><%= w.spdBonus %></td>
+          <td style="color:#ffd700;">$<%= w.price.toLocaleString() %></td>
+          <td>
+            <% if (equipped) { %><span style="color:#4caf50;">✓ EQUIPPED</span>
+            <% } else if (owned) { %><span style="color:#2196f3;">OWNED</span>
+            <% } else { %><span style="color:#888;">Not owned</span><% } %>
+          </td>
+          <td>
+            <% if (!owned) { %>
+              <button class="btn btn-small btn-primary" onclick="buy('<%= w.id %>')">BUY</button>
+            <% } else if (!equipped) { %>
+              <button class="btn btn-small" onclick="equip('<%= w.id %>')">EQUIP</button>
+            <% } %>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+function buy(id) {
+  fetch('/shop/buy/' + id, { method: 'POST' })
+    .then(r => r.json()).then(d => { alert(d.msg); location.reload(); });
+}
+function equip(id) {
+  fetch('/shop/equip/' + id, { method: 'POST' })
+    .then(r => r.json()).then(d => { alert(d.msg); location.reload(); });
+}
+</script>
+<%- include('layout-footer') %>

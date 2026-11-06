@@ -1,22 +1,59 @@
 <%- include('layout-header', { title: 'Prison Transport', active: 'transport' }) %>
 <div class="content-box">
   <h3>Prison Transport</h3>
-  <p style="color:#666;font-size:11px;margin-bottom:15px;">Sick of New Jersey? Check out the list of prisons we have exchange programs set up with. If you meet the requirements and have the dough, hop on the bus!</p>
+  <p style="color:#666;font-size:11px;margin-bottom:5px;">Sick of <%= user.prison %>? Check out the list of prisons we have exchange programs set up with. If you meet the requirements and have the dough, hop on the bus!</p>
   <p style="color:#f44336;font-size:11px;margin-bottom:15px;">Want 50% off prison transfer fees? Become RESPECTED now!</p>
+  
   <table class="data-table">
-    <thead><tr><th>Prison Name</th><th>Levels</th><th>Cell Size</th><th>Population</th><th>Cost</th></tr></thead>
+    <thead>
+      <tr><th>PRISON NAME</th><th>LEVELS</th><th>CELL SIZE</th><th>POPULATION</th><th>COST</th><th>ACTION</th></tr>
+    </thead>
     <tbody>
-      <% prisons.forEach(p => { %>
-        <tr>
-          <td><strong style="color:<%= p.id === user.prison ? '#4caf50' : '#1a1a1a' %>;"><%= p.name %></strong> <%= p.id === user.prison ? '(Current)' : '' %></td>
+      <% prisons.forEach(p => { 
+        const isCurrent = p.id === user.prison;
+        const isUnlocked = (user.unlocked_prisons || []).includes(p.id);
+        const meetsLevel = user.lvl >= p.minLvl;
+        const canAfford = user.cash >= p.cost;
+      %>
+        <tr style="<%= isCurrent ? 'background:#2e7d32;color:#fff;' : '' %>">
+          <td><strong><%= p.name %></strong> <%= isCurrent ? '(Current)' : '' %></td>
           <td><%= p.minLvl %>-<%= p.maxLvl %></td>
           <td><%= p.cellSize %></td>
           <td><%= p.pop.toLocaleString() %></td>
           <td>$<%= p.cost.toLocaleString() %></td>
+          <td>
+            <% if (isCurrent) { %>
+              <span style="color:#4caf50;">✓ HERE</span>
+            <% } else if (!meetsLevel) { %>
+              <span style="color:#888;">Lvl <%= p.minLvl %> required</span>
+            <% } else if (!canAfford) { %>
+              <span style="color:#f44336;">Need $<%= (p.cost - user.cash).toLocaleString() %> more</span>
+            <% } else { %>
+              <button class="btn btn-small btn-primary" onclick="transfer('<%= p.id %>')">TRANSFER</button>
+            <% } %>
+          </td>
         </tr>
       <% }); %>
     </tbody>
   </table>
-  <div style="text-align:right;margin-top:15px;"><button class="btn btn-small" onclick="location.href='/explore-prison'">back to prison yard</button></div>
+  <div style="text-align:right;margin-top:15px;">
+    <button class="btn btn-small" onclick="location.href='/explore-prison'">BACK TO PRISON YARD</button>
+  </div>
 </div>
+
+<script>
+function transfer(prisonId) {
+  if (!confirm('Confirm prison transfer? This will cost cash and move you to a new prison.')) return;
+  fetch('/prison-transport/transfer', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prisonId })
+  }).then(r => r.json()).then(d => {
+    alert(d.msg);
+    if (d.msg.includes('approved') || d.msg.includes('Welcome')) {
+      location.reload();
+    }
+  });
+}
+</script>
 <%- include('layout-footer') %>

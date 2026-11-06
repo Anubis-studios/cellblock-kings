@@ -10,14 +10,19 @@
 <div class="content-box">
   <h3>My Transactions</h3>
   <table class="data-table">
-    <thead><tr><th>Date</th><th>Package</th><th>Amount</th></tr></thead>
+    <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Description</th></tr></thead>
     <tbody>
-      <% if (!user.transactions || user.transactions.length === 0) { %>
-        <tr><td colspan="3" style="text-align:center;color:#888;">No Transactions</td></tr>
-      <% } else { %>
-        <% user.transactions.forEach(t => { %>
-          <tr><td><%= new Date(t.date).toLocaleDateString() %></td><td><%= t.package %></td><td>$<%= t.amount %></td></tr>
+      <% if (transactions && transactions.length > 0) { %>
+        <% transactions.forEach(t => { %>
+          <tr>
+            <td><%= new Date(t.date).toLocaleString() %></td>
+            <td><%= t.type %></td>
+            <td style="color:<%= t.amount > 0 ? '#4caf50' : '#f44336' %>">$<%= t.amount %></td>
+            <td><%= t.description %></td>
+          </tr>
         <% }); %>
+      <% } else { %>
+        <tr><td colspan="4" style="text-align:center;color:#888;">No Transactions Yet</td></tr>
       <% } %>
     </tbody>
   </table>

@@ -22,8 +22,14 @@
 </div>
 <script>
 function saveProfile() {
-  fetch('/profile/update', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ about_me: document.getElementById('aboutMe').value, forum_signature: document.getElementById('forumSig').value }) })
-    .then(r => r.json()).then(d => { alert(d.msg); });
+  fetch('/profile/update', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      about_me: document.getElementById('aboutMe').value,
+      forum_signature: document.getElementById('forumSig').value
+    })
+  }).then(r => r.json()).then(d => { alert(d.msg); });
 }
 </script>
 <%- include('layout-footer') %>

@@ -15,8 +15,11 @@
 </div>
 <script>
 function saveNotes() {
-  fetch('/notes/save', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ notes: document.getElementById('notes').value }) })
-    .then(r => r.json()).then(d => { alert(d.msg); });
+  fetch('/notes/save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ notes: document.getElementById('notes').value })
+  }).then(r => r.json()).then(d => { alert(d.msg); });
 }
 </script>
 <%- include('layout-footer') %>

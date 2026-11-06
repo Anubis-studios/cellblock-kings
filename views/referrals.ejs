@@ -11,51 +11,16 @@
   <h3>Referral Link</h3>
   <p style="color:#666;font-size:11px;">Use the link below to link players to your PrisonBlock profile. If they register, you'll be credited with the referral!</p>
   <p style="color:#4caf50;font-size:11px;font-weight:bold;">Earn 5 favors for every VALID referral* that reaches level 2!</p>
-  <input type="text" value="http://www.prisonblock.com/r/<%= user.referral_code %>" readonly style="width:100%;">
-</div>
-<div class="content-box">
-  <h3>Referral Badge</h3>
-  <p style="color:#666;font-size:11px;">Post this badge on your website, myspace, facebook or in your signature on forums to get referrals!</p>
-  <p style="color:#4caf50;font-size:11px;font-weight:bold;">Earn 5 favors for every VALID referral* that reaches level 2!</p>
-  <div style="background:#2a2a2a;padding:10px;border:1px solid #555;margin:10px 0;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="width:50px;height:50px;background:#555;display:flex;align-items:center;justify-content:center;font-size:24px;">👤</div>
-      <div>
-        <p style="color:#4caf50;font-weight:bold;"><%= user.tag %></p>
-        <p style="font-size:10px;color:#aaa;">Level: <%= user.lvl %></p>
-        <p style="font-size:10px;color:#aaa;">Prison: <%= user.prison %></p>
-        <p style="font-size:10px;color:#aaa;">Cash: $<%= user.cash %></p>
-      </div>
-    </div>
-  </div>
-  <label style="color:#666;font-weight:bold;">Website Embed Code:</label>
-  <textarea readonly style="width:100%;font-size:10px;"><a href="http://www.prisonblock.com/r/<%= user.referral_code %>"><img src="http://www.prisonblock.com/badges/<%= user.referral_code %>.png"></a></textarea>
-  <label style="color:#666;font-weight:bold;">Forum Embed Code:</label>
-  <textarea readonly style="width:100%;font-size:10px;">[URL=http://www.prisonblock.com/r/<%= user.referral_code %>][IMG]http://www.prisonblock.com/badges/<%= user.referral_code %>.png[/IMG][/URL]</textarea>
+  <input type="text" value="https://cellblock-kings.onrender.com/register?ref=<%= user.tag %>" readonly style="width:100%;margin:10px 0;">
 </div>
 <div class="content-box">
   <h3>My Referrals</h3>
   <table class="data-table">
     <thead><tr><th>Username</th><th>Registered</th><th>Credited</th><th>Status</th></tr></thead>
     <tbody>
-      <% if (!user.referrals || user.referrals.length === 0) { %>
-        <tr><td colspan="4" style="text-align:center;color:#888;">No Referrals</td></tr>
-      <% } else { %>
-        <% user.referrals.forEach(r => { %>
-          <tr><td><%= r.username %></td><td><%= new Date(r.registered).toLocaleDateString() %></td><td><%= r.credited ? 'Yes' : 'No' %></td><td><%= r.status %></td></tr>
-        <% }); %>
-      <% } %>
+      <tr><td colspan="4" style="text-align:center;color:#888;">No Referrals Yet</td></tr>
     </tbody>
   </table>
-  <p style="color:#888;font-size:10px;margin-top:10px;">Note: Referral status is updated hourly. Any referral found to be a duplicate account of the referrer or ANY other user will be deemed invalid.</p>
-  <p style="color:#888;font-size:10px;">*A valid referral is one that is not found to be a duplicate of another user, has reached level 2, and has at least 50 strength, defense and speed.</p>
-</div>
-<div class="content-box">
-  <h3>Invite Friends</h3>
-  <p style="color:#666;font-size:11px;">You can invite contacts from your Google or Yahoo Mail to <strong><%= user.tag %></strong> email account and send out messages to them. To begin, enter your email address and password.</p>
-  <p style="color:#f44336;font-size:10px;">Note: We do NOT store your login information in any way, shape or form. Your credentials are used only for the sole purpose of retrieving your contacts list.</p>
-  <input type="email" placeholder="Email" style="width:100%;">
-  <input type="password" placeholder="Password" style="width:100%;">
-  <button class="btn">Grab Contacts</button>
+  <p style="color:#888;font-size:10px;margin-top:10px;">Note: Referral status is updated hourly.</p>
 </div>
 <%- include('layout-footer') %>

@@ -1,25 +1,86 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Admin Panel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <%- include('partials/nav') %>
-  <main class="mobile-main">
-    <h2>🛠️ Inmate Management</h2>
-    <div class="list">
-      <% users.forEach(function(u) { %>
-        <div class="card-row" style="<%= u.banned ? 'border-color:#f44336;' : '' %>">
-          <div>
-            <h4><%= u.tag %> (Lvl <%= u.lvl %>) <%= u.banned ? '[BANNED]' : '' %></h4>
-            <p>Cash: $<%= u.cash %></p>
-          </div>
-        </div>
-      <% }); %>
+<%- include('layout-header', { title: 'Admin Panel', active: 'admin' }) %>
+<div class="content-box" style="border:3px solid #f44336;">
+  <h2 style="color:#f44336;text-transform:uppercase;">👑 Admin Control Panel</h2>
+  <p>Welcome, Administrator <%= user.tag %></p>
+  
+  <div class="stats-grid" style="margin:20px 0;">
+    <div class="stat-row"><span class="label">Total Users:</span><span class="value"><%= stats.totalUsers %></span></div>
+    <div class="stat-row"><span class="label">Online Users:</span><span class="value"><%= stats.onlineUsers %></span></div>
+    <div class="stat-row"><span class="label">Total Cash in Game:</span><span class="value">$<%= stats.totalCash.toLocaleString() %></span></div>
+  </div>
+  
+  <h3 style="margin-top:30px;">Quick Actions</h3>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:20px 0;">
+    <div style="background:#1a1a1a;padding:15px;border-radius:5px;">
+      <h4 style="color:#4caf50;">Grant Favors</h4>
+      <input type="text" id="admin-user-id" placeholder="User ID" style="width:100%;margin:10px 0;">
+      <input type="number" id="admin-favors" placeholder="Amount" style="width:100%;margin:10px 0;">
+      <button class="btn btn-primary" onclick="grantFavors()">Grant</button>
     </div>
-  </main>
-  <%- include('partials/bottom-nav') %>
-</body>
-</html>
+    <div style="background:#1a1a1a;padding:15px;border-radius:5px;">
+      <h4 style="color:#ff9800;">Set Level</h4>
+      <input type="text" id="admin-level-id" placeholder="User ID" style="width:100%;margin:10px 0;">
+      <input type="number" id="admin-level" placeholder="Level" style="width:100%;margin:10px 0;">
+      <button class="btn" style="background:#ff9800;color:#fff;" onclick="setLevel()">Set</button>
+    </div>
+    <div style="background:#1a1a1a;padding:15px;border-radius:5px;">
+      <h4 style="color:#2196f3;">Add Cash</h4>
+      <input type="text" id="admin-cash-id" placeholder="User ID" style="width:100%;margin:10px 0;">
+      <input type="number" id="admin-cash" placeholder="Amount" style="width:100%;margin:10px 0;">
+      <button class="btn" style="background:#2196f3;color:#fff;" onclick="addCash()">Add</button>
+    </div>
+  </div>
+  
+  <h3>All Users</h3>
+  <table class="data-table">
+    <thead><tr><th>Tag</th><th>Email</th><th>Level</th><th>Cash</th><th>Favors</th><th>Prison</th></tr></thead>
+    <tbody>
+      <% allUsers.forEach(u => { %>
+        <tr>
+          <td><%= u.tag %></td>
+          <td><%= u.email %></td>
+          <td><%= u.lvl %></td>
+          <td>$<%= u.cash %></td>
+          <td><%= u.favors || 0 %></td>
+          <td><%= u.prison %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+function grantFavors() {
+  fetch('/admin/grant-favors', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      userId: document.getElementById('admin-user-id').value,
+      amount: document.getElementById('admin-favors').value
+    })
+  }).then(r => r.json()).then(d => { alert(d.msg); });
+}
+
+function setLevel() {
+  fetch('/admin/set-level', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      userId: document.getElementById('admin-level-id').value,
+      level: document.getElementById('admin-level').value
+    })
+  }).then(r => r.json()).then(d => { alert(d.msg); });
+}
+
+function addCash() {
+  fetch('/admin/add-cash', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      userId: document.getElementById('admin-cash-id').value,
+      amount: document.getElementById('admin-cash').value
+    })
+  }).then(r => r.json()).then(d => { alert(d.msg); });
+}
+</script>
+<%- include('layout-footer') %>

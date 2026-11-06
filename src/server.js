@@ -365,3 +365,91 @@ app.get('/my-account', auth, (req, res) => {
 app.get('/rules', auth, (req, res) => {
   res.render('rules', { user: req.user });
 });
+
+// --- MISSING ROUTES FIX ---
+app.get('/profile', auth, (req, res) => {
+  res.render('profile', { user: req.user });
+});
+
+app.post('/profile/update', auth, async (req, res) => {
+  const { about_me, forum_signature } = req.body;
+  await db.collection('users').updateOne(
+    { _id: req.user._id },
+    { $set: { about_me, forum_signature } }
+  );
+  res.json({ msg: 'Profile updated!' });
+});
+
+app.get('/referrals', auth, (req, res) => {
+  res.render('referrals', { user: req.user });
+});
+
+app.get('/transactions', auth, async (req, res) => {
+  const transactions = await db.collection('transactions')
+    .find({ user_id: req.user._id })
+    .sort({ date: -1 })
+    .limit(50)
+    .toArray();
+  res.render('transactions', { user: req.user, transactions });
+});
+
+app.get('/notes', auth, (req, res) => {
+  res.render('notes', { user: req.user });
+});
+
+app.post('/notes/save', auth, async (req, res) => {
+  const { notes } = req.body;
+  await db.collection('users').updateOne(
+    { _id: req.user._id },
+    { $set: { notes: notes } }
+  );
+  res.json({ msg: 'Notes saved!' });
+});
+
+// Admin check middleware
+const isAdmin = (req, res, next) => {
+  if (req.user && req.user.tag === 'Anubis' && req.user.email === 'shdwnbs@gmail.com') {
+    req.isAdmin = true;
+    return next();
+  }
+  res.status(403).send('Access Denied: Admin privileges required');
+};
+
+// Admin panel route
+app.get('/admin', isAdmin, async (req, res) => {
+  const allUsers = await db.collection('users').find({}).toArray();
+  const stats = {
+    totalUsers: allUsers.length,
+    onlineUsers: allUsers.filter(u => u.online).length,
+    totalCash: allUsers.reduce((sum, u) => sum + (u.cash || 0), 0)
+  };
+  res.render('admin', { user: req.user, stats, allUsers });
+});
+
+// Admin commands
+app.post('/admin/grant-favors', isAdmin, async (req, res) => {
+  const { userId, amount } = req.body;
+  await db.collection('users').updateOne(
+    { _id: new ObjectId(userId) },
+    { $inc: { favors: parseInt(amount) } }
+  );
+  res.json({ msg: `Granted ${amount} favors!` });
+});
+
+app.post('/admin/set-level', isAdmin, async (req, res) => {
+  const { userId, level } = req.body;
+  await db.collection('users').updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: { lvl: parseInt(level) } }
+  );
+  res.json({ msg: `Level set to ${level}!` });
+});
+
+app.post('/admin/add-cash', isAdmin, async (req, res) => {
+  const { userId, amount } = req.body;
+  await db.collection('users').updateOne(
+    { _id: new ObjectId(userId) },
+    { $inc: { cash: parseInt(amount) } }
+  );
+  res.json({ msg: `Added $${amount}!` });
+});

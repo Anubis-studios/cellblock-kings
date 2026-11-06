@@ -173,7 +173,7 @@ app.post('/api/stripe/create-checkout', auth, async (req, res) => {
 
   try {
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      // payment_method_types removed - managed in Stripe Dashboard
       line_items: [{
         price_data: {
           currency: 'usd',
@@ -356,3 +356,12 @@ app.post('/shoutbox', auth, async (req, res) => {
 });
 
 startServer().catch(console.error);
+
+// Missing routes
+app.get('/my-account', auth, (req, res) => {
+  res.render('my-account', { user: req.user });
+});
+
+app.get('/rules', auth, (req, res) => {
+  res.render('rules', { user: req.user });
+});

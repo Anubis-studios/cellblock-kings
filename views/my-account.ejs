@@ -9,81 +9,11 @@
 </div>
 <div class="content-box">
   <h3>My Account</h3>
-  <p style="color:#f44336;margin-bottom:15px;">You are NOT currently a Respected Prisoner. Click here to upgrade.</p>
   <div class="stats-grid">
-    <div><label style="color:#666;font-weight:bold;">Username:</label><p><%= user.tag %></p></div>
-    <div><label style="color:#666;font-weight:bold;">Avatar:</label><div style="width:60px;height:60px;background:#555;border:2px solid #888;margin-top:5px;display:flex;align-items:center;justify-content:center;font-size:32px;">👤</div></div>
+    <div class="stat-row"><span class="label">Username:</span><span class="value"><%= user.tag %></span></div>
+    <div class="stat-row"><span class="label">Email:</span><span class="value"><%= user.email %></span></div>
+    <div class="stat-row"><span class="label">Member Since:</span><span class="value"><%= new Date(user.created).toLocaleDateString() %></span></div>
+    <div class="stat-row"><span class="label">Account Status:</span><span class="value" style="color:#4caf50;">Active</span></div>
   </div>
-  <label style="color:#666;font-weight:bold;">Email:</label>
-  <input type="email" value="<%= user.email %>" id="email">
-  <p style="color:#888;font-size:10px;">You can still change your username later!</p>
-  <label style="color:#666;font-weight:bold;">Change Password:</label>
-  <input type="password" id="newPass" placeholder="Only fill if you plan to change your password">
-  <label style="color:#666;font-weight:bold;">Confirm Password:</label>
-  <input type="password" id="confirmPass">
-  <p style="color:#888;font-size:10px;">Click here to change your password</p>
-  <label style="color:#666;font-weight:bold;">Link your account to Facebook:</label>
-  <button class="btn" style="background:#3b5998;margin-top:5px;">Connect with Facebook</button>
-  <p style="color:#888;font-size:10px;">Login with Facebook to share with your friends</p>
 </div>
-<div class="content-box">
-  <h3>Game Settings</h3>
-  <label style="color:#666;font-weight:bold;">Battle Speed:</label>
-  <div style="margin:5px 0;">
-    <label><input type="radio" name="battle_speed" value="slow" <%= user.game_settings?.battle_speed === 'slow' ? 'checked' : '' %> style="width:auto;"> Slow</label>
-    <label><input type="radio" name="battle_speed" value="fast" <%= user.game_settings?.battle_speed === 'fast' ? 'checked' : '' %> style="width:auto;"> Fast</label>
-    <label><input type="radio" name="battle_speed" value="instant" <%= user.game_settings?.battle_speed === 'instant' ? 'checked' : '' %> style="width:auto;"> Instant</label>
-  </div>
-  <p style="color:#888;font-size:10px;">How fast battles are displayed</p>
-  <label style="color:#666;font-weight:bold;">Map Highlighting:</label>
-  <div style="margin:5px 0;">
-    <label><input type="radio" name="map_highlighting" value="on" <%= user.game_settings?.map_highlighting ? 'checked' : '' %> style="width:auto;"> On</label>
-    <label><input type="radio" name="map_highlighting" value="off" <%= !user.game_settings?.map_highlighting ? 'checked' : '' %> style="width:auto;"> Off</label>
-  </div>
-  <p style="color:#888;font-size:10px;">Whether or not clickable areas are highlighted on maps</p>
-</div>
-<div class="content-box">
-  <h3>Forum Settings</h3>
-  <label style="color:#666;font-weight:bold;">Mention Notifications:</label>
-  <div style="margin:5px 0;">
-    <label><input type="radio" name="mention_notifications" value="on" <%= user.forum_settings?.mention_notifications ? 'checked' : '' %> style="width:auto;"> On</label>
-    <label><input type="radio" name="mention_notifications" value="off" <%= !user.forum_settings?.mention_notifications ? 'checked' : '' %> style="width:auto;"> Off</label>
-  </div>
-  <p style="color:#888;font-size:10px;">Notify me when someone mentions @<%= user.tag %> in a post</p>
-  <label style="color:#666;font-weight:bold;">Auto Subscribe To:</label>
-  <div style="margin:5px 0;">
-    <label><input type="radio" name="auto_subscribe" value="threads_start" <%= user.forum_settings?.auto_subscribe === 'threads_start' ? 'checked' : '' %> style="width:auto;"> Threads I Start</label>
-    <label><input type="radio" name="auto_subscribe" value="threads_reply" <%= user.forum_settings?.auto_subscribe === 'threads_reply' ? 'checked' : '' %> style="width:auto;"> Threads I Reply to</label>
-    <label><input type="radio" name="auto_subscribe" value="both" <%= user.forum_settings?.auto_subscribe === 'both' ? 'checked' : '' %> style="width:auto;"> Both</label>
-    <label><input type="radio" name="auto_subscribe" value="none" <%= user.forum_settings?.auto_subscribe === 'none' ? 'checked' : '' %> style="width:auto;"> None</label>
-  </div>
-  <p style="color:#888;font-size:10px;">Whether or not you will be automatically subscribed to forum threads</p>
-  <button class="btn btn-primary" onclick="saveAccount()">Save Changes</button>
-</div>
-<div class="content-box">
-  <h3>Recent Logins</h3>
-  <table class="data-table">
-    <thead><tr><th>Date</th><th>IP Address</th></tr></thead>
-    <tbody>
-      <% (user.recent_logins || []).slice().reverse().forEach(l => { %>
-        <tr><td><%= new Date(l.date).toLocaleString() %></td><td><%= l.ip %></td></tr>
-      <% }); %>
-    </tbody>
-  </table>
-</div>
-<script>
-function saveAccount() {
-  const data = {
-    email: document.getElementById('email').value,
-    pass: document.getElementById('newPass').value,
-    confirm: document.getElementById('confirmPass').value,
-    battle_speed: document.querySelector('input[name="battle_speed"]:checked')?.value,
-    map_highlighting: document.querySelector('input[name="map_highlighting"]:checked')?.value,
-    mention_notifications: document.querySelector('input[name="mention_notifications"]:checked')?.value,
-    auto_subscribe: document.querySelector('input[name="auto_subscribe"]:checked')?.value
-  };
-  fetch('/my-account/update', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) })
-    .then(r => r.json()).then(d => { alert(d.msg); location.reload(); });
-}
-</script>
 <%- include('layout-footer') %>

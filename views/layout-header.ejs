@@ -3,14 +3,19 @@
 <head>
   <title><%= title || 'Cellblock Kings' %></title>
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="/logos/cellblock-kings-logo.svg">
 </head>
 <body>
   <div class="top-bar">
+    <div class="logo-small">
+      <img src="/logos/cellblock-kings-logo.svg" alt="CK" style="height:40px;" onerror="this.style.display='none'">
+      <span style="color:#ff6b35; font-weight:bold; font-size:18px; text-transform:uppercase; letter-spacing:2px; margin-left:10px;">CELLBLOCK KINGS</span>
+    </div>
     <div class="player-info-top">
       <div class="player-avatar">👤</div>
       <div class="player-details">
         <h2><%= user.tag %></h2>
-        <p>Lvl: <%= user.lvl %> | Cash: $<%= user.cash %> | Points: <%= user.points || 0 %></p>
+        <p>Lvl: <%= user.lvl %> | Cash: $<%= user.cash %> | Favors: <%= user.favors || 0 %></p>
       </div>
     </div>
     <div class="stat-bars-top">
@@ -18,65 +23,26 @@
       <div class="stat-bar-top"><div class="label">ENR</div><div class="value"><%= user.en %>/<%= user.max_en %></div><div class="bar"><div class="bar-fill en-fill" style="width: <%= (user.en/user.max_en)*100 %>%"></div></div></div>
       <div class="stat-bar-top"><div class="label">STM</div><div class="value"><%= user.stm %>/<%= user.max_stm %></div><div class="bar"><div class="bar-fill stm-fill" style="width: <%= (user.stm/user.max_stm)*100 %>%"></div></div></div>
       <div class="stat-bar-top"><div class="label">NRV</div><div class="value"><%= user.nrv %>/<%= user.max_nrv %></div><div class="bar"><div class="bar-fill nrv-fill" style="width: <%= (user.nrv/user.max_nrv)*100 %>%"></div></div></div>
-      <div class="stat-bar-top"><div class="label">EXP</div><div class="value"><%= user.exp %></div><div class="bar"><div class="bar-fill exp-fill" style="width: <%= Math.min((user.exp/(user.lvl*100))*100, 100) %>%"></div></div></div>
     </div>
   </div>
   <div class="game-layout">
     <nav class="sidebar">
-      <div class="mail-icons">
-        <div class="mail-icon" onclick="location.href='/mail'">📧 Mail</div>
-        <div class="mail-icon">📝 Events</div>
-      </div>
       <div class="sidebar-section">
         <div class="sidebar-title">MENU</div>
         <a href="/rap-sheet" class="<%= active === 'rap-sheet' ? 'active' : '' %>">My Account</a>
         <a href="/surgeon" class="<%= active === 'surgeon' ? 'active' : '' %>">🔪 The Surgeon</a>
         <a href="/premium" class="<%= active === 'premium' ? 'active' : '' %>">💎 Premium Store</a>
-        
-        
-        <a href="/my-cell" class="<%= active === 'my-cell' ? 'active' : '' %>">My Cell</a>
-        <a href="/bank" class="<%= active === 'bank' ? 'active' : '' %>">My Bank Account</a>
-        <a href="/equipment" class="<%= active === 'equipment' ? 'active' : '' %>">My Equipment</a>
-        <a href="/inventory" class="<%= active === 'inventory' ? 'active' : '' %>">My Inventory</a>
-        <a href="/missions" class="<%= active === 'missions' ? 'active' : '' %>">My Missions</a>
-        <a href="/battles" class="<%= active === 'battles' ? 'active' : '' %>">Battles</a>
-        <a href="/spy-log" class="<%= active === 'spy-log' ? 'active' : '' %>">Spy Log</a>
-        <a href="/friends" class="<%= active === 'friends' ? 'active' : '' %>">Friends</a>
-        <a href="/enemies" class="<%= active === 'enemies' ? 'active' : '' %>">Enemies</a>
-        <a href="/rules" class="<%= active === 'rules' ? 'active' : '' %>">Game Rules</a>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-title">PRISON</div>
-        <a href="/explore-prison" class="<%= active === 'explore' ? 'active' : '' %>">Explore Prison</a>
-        <a href="/gym" class="<%= active === 'gym' ? 'active' : '' %>">The Gym</a>
-        <a href="/infirmary" class="<%= active === 'infirmary' ? 'active' : '' %>">Infirmary</a>
-        <a href="/infirmary/isolation" class="<%= active === 'isolation' ? 'active' : '' %>">Isolation Cell</a>
-        <a href="/marketplace" class="<%= active === 'marketplace' ? 'active' : '' %>">Marketplace</a>
-        <a href="/game-room" class="<%= active === 'game-room' ? 'active' : '' %>">Game Room</a>
-        <a href="/hitlist" class="<%= active === 'hitlist' ? 'active' : '' %>">The Hitlist</a>
-        <a href="/warden" class="<%= active === 'warden' ? 'active' : '' %>">The Warden</a>
-        <a href="/prison-transport" class="<%= active === 'transport' ? 'active' : '' %>">Prison Transport</a>
+        <a href="/shop" class="<%= active === 'shop' ? 'active' : '' %>">Black Market</a>
         <a href="/prison-jobs" class="<%= active === 'jobs' ? 'active' : '' %>">Jobs Board</a>
         <a href="/npcs" class="<%= active === 'npcs' ? 'active' : '' %>">Inmates</a>
-        <a href="/shop" class="<%= active === 'shop' ? 'active' : '' %>">Black Market</a>
-        <a href="/prison-transport" class="<%= active === 'transport' ? 'active' : '' %>">Prison Transport</a>
-        <a href="/most-wanted" class="<%= active === 'most-wanted' ? 'active' : '' %>">Most Wanted List</a>
-        <a href="/lottery" class="<%= active === 'lottery' ? 'active' : '' %>">Weekly Lottery</a>
-        <a href="/tutorial" class="<%= active === 'tutorial' ? 'active' : '' %>">Game Tutorial</a>
         <a href="/shoutbox" class="<%= active === 'shoutbox' ? 'active' : '' %>">Shoutbox</a>
       </div>
       <div class="sidebar-section">
-        <div class="sidebar-title">GANGS</div>
-        <a href="/gangs" class="<%= active === 'gangs' ? 'active' : '' %>">Known Gangs</a>
-        <a href="/gangs/invites">Gang Invites</a>
+        <div class="sidebar-title">PRISON</div>
+        <a href="/prison-transport" class="<%= active === 'transport' ? 'active' : '' %>">Prison Transport</a>
       </div>
       <div class="sidebar-section">
-        <div class="sidebar-title">VOTING LINKS</div>
-        <a href="/voting">OZ Games</a>
-        <a href="/voting">GTop 100</a>
-        <a href="/voting">MMOG</a>
-        <a href="/voting">Top Web Games</a>
-        <a href="/voting">Top 100 Arena</a>
+        <a href="/logout" style="color:#f44336; font-weight:bold;">🚪 Logout</a>
       </div>
       <div class="game-time">Game Time: <span id="gameTime">Loading...</span></div>
     </nav>

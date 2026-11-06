@@ -55,7 +55,7 @@ function attack(npcId, npcTag) {
   if (!confirm('Attack ' + npcTag + '? Costs 10 Energy. They WILL fight back!')) return;
   fetch('/combat/attack/' + npcId, { method: 'POST' })
     .then(r => r.json()).then(d => { 
-      alert(d.msg + '\\n\\n' + d.details); 
+      alert(d.msg + '\n\n' + (d.details || '')); 
       location.reload(); 
     });
 }
